@@ -1,0 +1,45 @@
+name: Build, Push, and Deploy via SSH (to portainer)
+
+on:
+  workflow_run:
+    workflows: ["Cypress Tests"] # must match name in cypress.yml
+    types:
+      - completed
+
+jobs:
+  build-and-deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/vhs-rentals:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/vhs-rentals:${{ github.sha }}
+
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_SSH_PORT }}
+          script: |
+            set -e
+            cd /home/deploy/vhs-rentals
+            docker compose pull
+            docker compose up -d --remove-orphans
+            sleep 3
+            docker compose ps
