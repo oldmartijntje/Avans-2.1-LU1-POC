@@ -145,3 +145,84 @@ If you’re unsure how to set secrets, see [user_secrets.md](./user_secrets.md).
 
 In some cases, you want to remove your things from your VPS. Like me, hosting this for school.
 
+If you no longer want your app on the VPS, you can remove it step by step. All steps are optional, but doing them in order ensures a clean removal.
+
+---
+
+### 1. Stop and Remove Containers (Optional)
+
+If your app is running via Docker Compose:
+
+```bash
+ssh deploy@YOUR_SERVER_IP
+cd /home/deploy/YOUR_REPO_NAME
+docker compose down
+```
+
+> ⚠️ Note: Step 4 (removing Docker) will also remove all containers, so this step is optional if you plan to uninstall Docker.
+
+---
+
+### 2. Remove App Files (Optional)
+
+Delete `.env`, `docker-compose.yml`, and other project files:
+
+```bash
+rm -rf /home/deploy/YOUR_REPO_NAME
+```
+
+> Make sure you’re deleting the correct directory. This won’t affect Docker containers if they’re running.
+
+---
+
+### 3. Remove SSH Key from VPS (Optional)
+
+If you set up a GitHub Actions key, remove it from the `authorized_keys`:
+
+```bash
+ssh deploy@YOUR_SERVER_IP
+nano ~/.ssh/authorized_keys
+# delete the line with GitHub Actions key
+```
+
+Or via command line:
+
+```bash
+ssh deploy@YOUR_SERVER_IP "sed -i '/github-actions/d' ~/.ssh/authorized_keys"
+```
+
+---
+
+### 4. Remove Deploy User (Optional)
+
+If you want to remove the user entirely:
+
+```bash
+ssh root@YOUR_SERVER_IP
+deluser --remove-home deploy
+```
+
+> ⚠️ Removing the user will also remove their home directory unless you’ve already deleted it manually.
+
+---
+
+### 5. Uninstall Docker & Compose (Optional)
+
+If you want to completely remove Docker from your VPS:
+
+```bash
+ssh root@YOUR_SERVER_IP
+apt purge -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+apt autoremove -y
+rm -rf /var/lib/docker /etc/docker
+```
+
+> ⚠️ This will also remove all containers, images, and volumes.
+
+---
+
+This order ensures:
+
+1. Running containers are stopped before files are deleted.
+2. SSH keys are cleaned up before deleting the deploy user.
+3. Docker removal cleans up any leftovers automatically.
