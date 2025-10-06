@@ -24,8 +24,8 @@ jobs:
         with:
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/{{ github.event.repository.name }}:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/{{ github.event.repository.name }}:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/{{ github.event.repository.name | toLowerCase }}:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/{{ github.event.repository.name | toLowerCase }}:${{ github.sha }}
 
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@v0.1.7
