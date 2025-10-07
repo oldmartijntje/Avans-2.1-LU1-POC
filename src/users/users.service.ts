@@ -35,6 +35,11 @@ export class UsersService {
         }
     ];
 
+    /**
+     * Find all items, with optional filter for role.
+     * @param role 
+     * @returns 
+     */
     findAll(role?: 'INTERN' | 'ENGINEER' | 'ADMIN') {
         if (role) {
             return this.users.filter(user => user.role == role);
@@ -42,12 +47,22 @@ export class UsersService {
         return this.users;
     }
 
+    /**
+     * find a specific user by id
+     * @param id 
+     * @returns 
+     */
     findOne(id: number) {
         const user = this.users.find(user => user.id === id);
 
         return user;
     }
 
+    /**
+     * create a new user
+     * @param user 
+     * @returns 
+     */
     create(user: { name: string, email: string, role: 'INTERN' | 'ENGINEER' | 'ADMIN' }) {
         const usersByHighestId = [...this.users].sort((a, b) => b.id - a.id);
         const newUser = {
@@ -59,6 +74,12 @@ export class UsersService {
         return newUser;
     }
 
+    /**
+     * update an user by id
+     * @param id 
+     * @param updatedUser 
+     * @returns 
+     */
     update(id: number, updatedUser: { name?: string, email?: string, role?: 'INTERN' | 'ENGINEER' | 'ADMIN' }) {
         this.users = this.users.map(user => {
             if (user.id === id) {
@@ -69,6 +90,11 @@ export class UsersService {
         return this.findOne(id);
     }
 
+    /**
+     * delete an user by id
+     * @param id 
+     * @returns 
+     */
     delete(id: number) {
         const removedUser = this.findOne(id);
 
