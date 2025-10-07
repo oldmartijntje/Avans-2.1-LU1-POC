@@ -2,12 +2,14 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
+import { UsersModule } from './users/users.module';
 
 @Module({
     imports: [
         ConfigModule.forRoot({
-            isGlobal: true, // so you don’t need to import it everywhere
+            isGlobal: true,
         }),
+        UsersModule,
     ],
     controllers: [AppController],
     providers: [AppService],
