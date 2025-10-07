@@ -3,6 +3,9 @@ This is the backend for the avans 2.1 LU1 B assignment.
 
 Read more in the `docs` folder
 
+This project is made by following [this nestjs tutorial](https://www.youtube.com/playlist?list=PL0Zuz27SZ-6MexSAh5x1R3rU6Mg2zYBVr)
+
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
