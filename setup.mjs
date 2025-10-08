@@ -8,6 +8,15 @@ const projectName = "lu1poc"
 
 const DEFAULT_URI = `mongodb://localhost:27017/${projectName}`;
 
+function randomString(length) {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
 
 async function promptDatabase() {
     const answers = await inquirer.prompt([
@@ -52,6 +61,36 @@ async function promptPort() {
         return customPort;
     }
     return portChoice;
+}
+
+async function promptJwtSecret() {
+    const { jwtChoice } = await inquirer.prompt([{
+        type: 'list',
+        name: 'jwtChoice',
+        message: 'The JWT secret',
+        choices: ['random 256 char string', 'random 128 char string', 'random 64 char string', 'random 32 char string', 'custom'],
+        default: 'random 256 char string'
+    }]);
+    if (jwtChoice === 'custom') {
+        const { customJwt } = await inquirer.prompt([{
+            type: 'input',
+            name: 'customJwt',
+            message: 'Enter custom JWT secret:',
+            default: 'CREATE A COMPLEX SECRET'
+        }]);
+        return { manual: customJwt };
+    } else {
+        switch (jwtChoice) {
+            case 'random 128 char string':
+                return { gen: 128 };
+            case 'random 64 char string':
+                return { gen: 64 };
+            case 'random 32 char string':
+                return { gen: 32 };
+            case 'random 256 char string':
+                return { gen: 256 };
+        }
+    }
 }
 
 async function promptAdminAccount() {
@@ -105,11 +144,6 @@ async function main() {
         const finalPort = await promptPort();
         const adminAccount = await promptAdminAccount();
 
-        // .env
-        let envContent = `MONGO_URI=${finalUri}\nPORT=${finalPort}\n`;
-        fs.writeFileSync(path.resolve(process.cwd(), '.env'), envContent);
-        console.log('.env file created');
-
         // Insert admin into DB if requested
         if (adminAccount) {
             // Dynamically import mongoose and define schema inline
@@ -140,21 +174,28 @@ async function main() {
         }
 
         // settings.json
-        let logging = true;
+        let generateJwtSecretLength = 128;
+        let jwtSecret;
+
         if (advanced) {
-            // const { enableLogging } = await inquirer.prompt([
-            //     {
-            //         type: 'confirm',
-            //         name: 'enableLogging',
-            //         message: 'Enable request logging?',
-            //         default: true
-            //     }
-            // ]);
-            // logging = enableLogging;
+            const jwtSecretResponse = await promptJwtSecret();
+            if (jwtSecretResponse.manual != undefined) {
+                jwtSecret = jwtSecretResponse.manual;
+            } else {
+                generateJwtSecretLength = jwtSecretResponse.gen;
+            }
         }
+        if (!jwtSecret) {
+            jwtSecret = randomString(generateJwtSecretLength);
+        }
+
+        // .env
+        let envContent = `MONGO_URI=${finalUri}\nPORT=${finalPort}\nJWT_SECRET=${jwtSecret}\n`;
+        fs.writeFileSync(path.resolve(process.cwd(), '.env'), envContent);
+        console.log('.env file created');
+
         const settings = {
-            port: parseInt(finalPort, 10),
-            logging
+            port: parseInt(finalPort, 10)
         };
         fs.writeFileSync(
             path.resolve(process.cwd(), 'settings.json'),
