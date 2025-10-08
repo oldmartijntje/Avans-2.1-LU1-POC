@@ -6,6 +6,8 @@ import { UsersModule } from './users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { CaslModule } from './casl/casl.module';
+import { SubjectsController } from './modules/subjects.controller';
+import { SubjectsModule } from './modules/subjects.module';
 
 @Module({
     imports: [
@@ -16,8 +18,9 @@ import { CaslModule } from './casl/casl.module';
         UsersModule,
         MongooseModule.forRoot(process.env.MONGO_URI ?? (() => { throw new Error("MONGO_URI is not set in the .env\nHave you used the command: `npm run setup`?\n"); })()),
         CaslModule,
+        SubjectsModule,
     ],
-    controllers: [AppController],
+    controllers: [AppController, SubjectsController],
     providers: [AppService],
 })
 export class AppModule { }
