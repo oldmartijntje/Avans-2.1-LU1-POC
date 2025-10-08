@@ -118,13 +118,12 @@ async function main() {
                 username: { type: String, required: true },
                 password: { type: String, required: true },
                 email: { type: String, required: false },
-                accessIdentifiers: { type: [String], required: true }
+                role: { type: String, required: true }
             };
             const userSchema = new mongoose.Schema(userJsonSchema);
             const User = mongoose.model('user', userSchema);
             await mongoose.connect(finalUri);
-            const userCount = await User.countDocuments({});
-            const accessIdentifiers = userCount === 0 ? ['#'] : [];
+            const role = 'ADMIN';
             const exists = await User.findOne({ username: adminAccount.username });
             if (exists) {
                 console.log(`Admin user '${adminAccount.username}' already exists in database.`);
@@ -132,7 +131,8 @@ async function main() {
                 await User.create({
                     username: adminAccount.username,
                     password: adminAccount.hashedPassword,
-                    accessIdentifiers
+                    email: `${adminAccount.username}@template.mail`,
+                    role: role
                 });
                 console.log(`Admin user '${adminAccount.username}' created in database.`);
             }
@@ -142,15 +142,15 @@ async function main() {
         // settings.json
         let logging = true;
         if (advanced) {
-            const { enableLogging } = await inquirer.prompt([
-                {
-                    type: 'confirm',
-                    name: 'enableLogging',
-                    message: 'Enable request logging?',
-                    default: true
-                }
-            ]);
-            logging = enableLogging;
+            // const { enableLogging } = await inquirer.prompt([
+            //     {
+            //         type: 'confirm',
+            //         name: 'enableLogging',
+            //         message: 'Enable request logging?',
+            //         default: true
+            //     }
+            // ]);
+            // logging = enableLogging;
         }
         const settings = {
             port: parseInt(finalPort, 10),
