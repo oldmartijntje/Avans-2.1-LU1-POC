@@ -9,7 +9,7 @@ export class UsersService {
             "id": 1,
             "name": "Henk de Hopper",
             "email": "henkdehopper@gmail.com",
-            "role": "ENGINEER"
+            "role": "STUDENT"
         },
         {
             "id": 2,
@@ -21,19 +21,19 @@ export class UsersService {
             "id": 3,
             "name": "Kees Kerfstok",
             "email": "keeskerfstok@gmail.com",
-            "role": "ENGINEER"
+            "role": "STUDENT"
         },
         {
             "id": 4,
             "name": "John Doe",
             "email": "john.doe@gmail.com",
-            "role": "INTERN"
+            "role": "TEACHER"
         },
         {
             "id": 5,
             "name": "Jane Doe",
             "email": "jane.doe@gmail.com",
-            "role": "INTERN"
+            "role": "TEACHER"
         }
     ];
 
@@ -42,7 +42,7 @@ export class UsersService {
      * @param role 
      * @returns 
      */
-    findAll(role?: 'INTERN' | 'ENGINEER' | 'ADMIN') {
+    findAll(role?: 'TEACHER' | 'STUDENT' | 'ADMIN') {
         if (role) {
             const rolesArray = this.users.filter(user => user.role == role);
 
