@@ -1,116 +1,51 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
+import { User } from './schemas/user.schema';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UsersService {
-    private users = [
-        {
-            "id": 1,
-            "name": "Henk de Hopper",
-            "email": "henkdehopper@gmail.com",
-            "role": "STUDENT"
-        },
-        {
-            "id": 2,
-            "name": "Mara Machtig",
-            "email": "maramachtig@gmail.com",
-            "role": "ADMIN"
-        },
-        {
-            "id": 3,
-            "name": "Kees Kerfstok",
-            "email": "keeskerfstok@gmail.com",
-            "role": "STUDENT"
-        },
-        {
-            "id": 4,
-            "name": "John Doe",
-            "email": "john.doe@gmail.com",
-            "role": "TEACHER"
-        },
-        {
-            "id": 5,
-            "name": "Jane Doe",
-            "email": "jane.doe@gmail.com",
-            "role": "TEACHER"
-        }
-    ];
+    constructor(@InjectModel(User.name) private userModel: Model<User>) { }
 
-    /**
-     * Find all items, with optional filter for role.
-     * @param role 
-     * @returns 
-     */
-    findAll(role?: 'TEACHER' | 'STUDENT' | 'ADMIN') {
+    findAll(role?: 'TEACHER' | 'STUDENT' | 'ADMIN'): Promise<User[]> {
         if (role) {
-            const rolesArray = this.users.filter(user => user.role == role);
-
-            if (rolesArray.length === 0) {
-                throw new NotFoundException('User Role Not Found');
-            }
-            return rolesArray;
+            return this.userModel.find({ role }).exec();
         }
-        return this.users;
+        return this.userModel.find().exec();
     }
 
-    /**
-     * find a specific user by id
-     * @param id 
-     * @returns 
-     */
-    findOne(id: number) {
-        const user = this.users.find(user => user.id === id);
-
-        if (!user) {
-            throw new NotFoundException('User Not Found');
-        }
-
-        return user;
-    }
-
-    /**
-     * create a new user
-     * @param createUserDto 
-     * @returns 
-     */
-    create(createUserDto: CreateUserDto) {
-        const usersByHighestId = [...this.users].sort((a, b) => b.id - a.id);
-        const newUser = {
-            id: usersByHighestId[0].id + 1,
-            ...createUserDto
-        }
-        this.users.push(newUser);
-
-        return newUser;
-    }
-
-    /**
-     * update an user by id
-     * @param id 
-     * @param updateUserDto 
-     * @returns 
-     */
-    update(id: number, updateUserDto: UpdateUserDto) {
-        this.users = this.users.map(user => {
-            if (user.id === id) {
-                return { ...user, ...updateUserDto };
+    findOne(uuid: string): Promise<User> {
+        return this.userModel.findOne({ uuid }).exec().then(user => {
+            if (!user) {
+                throw new NotFoundException('User Not Found');
             }
             return user;
         });
-        return this.findOne(id);
     }
 
-    /**
-     * delete an user by id
-     * @param id 
-     * @returns 
-     */
-    delete(id: number) {
-        const removedUser = this.findOne(id);
+    create(createUserDto: CreateUserDto): Promise<User> {
+        const createdUser = new this.userModel({ ...createUserDto, ...{ uuid: uuidv4() } });
+        return createdUser.save();
+    }
 
-        this.users = this.users.filter(user => user.id !== id);
+    update(uuid: string, updateUserDto: UpdateUserDto): Promise<User> {
+        return this.userModel.findOneAndUpdate({ uuid }, updateUserDto, { new: true }).exec().then(user => {
+            if (!user) {
+                throw new NotFoundException('User Not Found');
+            }
+            return user;
+        });
+    }
 
-        return removedUser;
+    delete(uuid: string): Promise<User> {
+        return this.userModel.findOneAndDelete({ uuid }).exec().then(user => {
+            if (!user) {
+                throw new NotFoundException('User Not Found');
+            }
+            return user;
+        });
     }
 }
