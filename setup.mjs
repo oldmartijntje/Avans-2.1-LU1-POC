@@ -63,13 +63,44 @@ async function promptPort() {
     return portChoice;
 }
 
+async function promptJwtExpirationTime() {
+    const { timeChoice } = await inquirer.prompt([{
+        type: 'list',
+        name: 'timeChoice',
+        message: 'Select JWT expiration time:',
+        choices: [
+            { name: '1 minute', value: 1 },
+            { name: '1 hour', value: 60 },
+            { name: '1 day', value: 1440 },
+            { name: '1 week', value: 10080 },
+            { name: 'Custom (in minutes)', value: 'custom' },
+        ],
+        default: 1440 // 1 day
+    }]);
+
+    if (timeChoice === 'custom') {
+        const { customTime } = await inquirer.prompt([{
+            type: 'input',
+            name: 'customTime',
+            message: 'Enter custom expiration time (in minutes):',
+            default: 1440, // 1 day in minutes
+            validate: input => {
+                const num = parseInt(input, 10);
+                return !isNaN(num) && num > 0 ? true : 'Please enter a valid number of minutes';
+            }
+        }]);
+        return parseInt(customTime, 10);
+    }
+
+    return timeChoice; // Already an int
+}
+
 async function promptJwtSecret() {
     const { jwtChoice } = await inquirer.prompt([{
         type: 'list',
         name: 'jwtChoice',
         message: 'The JWT secret',
-        choices: ['random 256 char string', 'random 128 char string', 'random 64 char string', 'random 32 char string', 'custom'],
-        default: 'random 256 char string'
+        choices: ['random 128 char string', 'random 256 char string', 'random 64 char string', 'random 32 char string', 'custom']
     }]);
     if (jwtChoice === 'custom') {
         const { customJwt } = await inquirer.prompt([{
@@ -176,6 +207,7 @@ async function main() {
         // settings.json
         let generateJwtSecretLength = 128;
         let jwtSecret;
+        let jwtExpirationTime = 1440;
 
         if (advanced) {
             const jwtSecretResponse = await promptJwtSecret();
@@ -184,6 +216,7 @@ async function main() {
             } else {
                 generateJwtSecretLength = jwtSecretResponse.gen;
             }
+            jwtExpirationTime = await promptJwtExpirationTime();
         }
         if (!jwtSecret) {
             jwtSecret = randomString(generateJwtSecretLength);
@@ -195,7 +228,8 @@ async function main() {
         console.log('.env file created');
 
         const settings = {
-            port: parseInt(finalPort, 10)
+            port: parseInt(finalPort, 10),
+            jwtExpirationTime
         };
         fs.writeFileSync(
             path.resolve(process.cwd(), 'settings.json'),
