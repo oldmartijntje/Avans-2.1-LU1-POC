@@ -26,6 +26,15 @@ export class UsersService {
         });
     }
 
+    findOneByName(name: string): Promise<User> {
+        return this.userModel.findOne({ name }).exec().then(user => {
+            if (!user) {
+                throw new NotFoundException('User Not Found');
+            }
+            return user;
+        });
+    }
+
     create(createUserDto: CreateUserDto): Promise<User> {
         const createdUser = new this.userModel({ ...createUserDto, ...{ uuid: uuidv4() } });
         return createdUser.save();

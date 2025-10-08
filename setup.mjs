@@ -63,7 +63,7 @@ async function promptPort() {
     return portChoice;
 }
 
-async function promptJwtExpirationTime() {
+async function promptjwtExpirationMinutes() {
     const { timeChoice } = await inquirer.prompt([{
         type: 'list',
         name: 'timeChoice',
@@ -207,7 +207,7 @@ async function main() {
         // settings.json
         let generateJwtSecretLength = 128;
         let jwtSecret;
-        let jwtExpirationTime = 1440;
+        let jwtExpirationMinutes = 1440;
 
         if (advanced) {
             const jwtSecretResponse = await promptJwtSecret();
@@ -216,7 +216,7 @@ async function main() {
             } else {
                 generateJwtSecretLength = jwtSecretResponse.gen;
             }
-            jwtExpirationTime = await promptJwtExpirationTime();
+            jwtExpirationMinutes = await promptjwtExpirationMinutes();
         }
         if (!jwtSecret) {
             jwtSecret = randomString(generateJwtSecretLength);
@@ -229,7 +229,7 @@ async function main() {
 
         const settings = {
             port: parseInt(finalPort, 10),
-            jwtExpirationTime
+            jwtExpirationMinutes
         };
         fs.writeFileSync(
             path.resolve(process.cwd(), 'settings.json'),

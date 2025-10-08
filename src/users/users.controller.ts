@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Query, ParseIntPipe,
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AllowAnon } from '../auth/auth.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -17,6 +18,7 @@ export class UsersController {
     }
 
     // static routes need t be before dynamic routes, otherwise it will be interperated as a param
+    @AllowAnon()
     @Get(':uuid') // GET /users/:uuid
     findOne(@Param('uuid', new ParseUUIDPipe()) uuid: string) {
         return this.usersService.findOne(uuid);

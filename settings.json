@@ -1,4 +1,4 @@
 {
     "port": 6969,
-    "jwtExpirationTime": 1440
+    "jwtExpirationMinutes": 1440
 }
