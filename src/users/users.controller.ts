@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, ParseIntPipe, ValidationPipe, ParseUUIDPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, ParseIntPipe, ValidationPipe, ParseUUIDPipe, UseGuards, Request, ForbiddenException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AllowAnon } from '../auth/auth.decorator';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -30,7 +31,16 @@ export class UsersController {
     }
 
     @Patch(':uuid') // PATCH /users/:uuid
-    update(@Param('uuid', new ParseUUIDPipe()) uuid: string, @Body(ValidationPipe) updateUserDto: UpdateUserDto) {
+    @UseGuards(AuthGuard)
+    update(@Param('uuid', new ParseUUIDPipe()) uuid: string, @Body(ValidationPipe) updateUserDto: UpdateUserDto, @Request() req) {
+        updateUserDto['name'] = undefined
+        // only allow changing password if the requester is the user themself
+        if (updateUserDto['password']) {
+            const requesterUuid = req.user?.sub;
+            if (!requesterUuid || requesterUuid !== uuid) {
+                throw new ForbiddenException('You can only change your own password');
+            }
+        }
         return this.usersService.update(uuid, updateUserDto);
     }
 
