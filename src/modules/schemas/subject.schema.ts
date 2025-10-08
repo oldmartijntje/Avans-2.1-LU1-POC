@@ -1,6 +1,6 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 export type SubjectDocument = HydratedDocument<Subject>;
 
@@ -9,17 +9,23 @@ export class Subject {
     @Prop()
     uuid: string;
 
-    @Prop()
-    name: string;
+    @Prop({ type: Types.ObjectId, ref: 'Translation' })
+    title: Types.ObjectId;
+
+    @Prop({ type: Types.ObjectId, ref: 'Translation' })
+    description: Types.ObjectId;
 
     @Prop()
-    password?: string;
+    ownerUuid: string;
 
     @Prop()
-    email: string;
+    level: 'NLQF-5' | 'NLQF-6';
 
     @Prop()
-    role: 'TEACHER' | 'STUDENT' | 'ADMIN';
+    studyPoints: number;
+
+    @Prop()
+    language: string;
 }
 
 export const SubjectSchema = SchemaFactory.createForClass(Subject);
