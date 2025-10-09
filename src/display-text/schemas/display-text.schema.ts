@@ -14,6 +14,9 @@ export class DisplayText {
 
     @Prop()
     english: string;
+
+    @Prop()
+    uiKey?: string;
 }
 
 export const DisplayTextSchema = SchemaFactory.createForClass(DisplayText);

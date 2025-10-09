@@ -9,6 +9,8 @@ import { CaslModule } from './casl/casl.module';
 import { SubjectsController } from './modules/subjects.controller';
 import { SubjectsModule } from './modules/subjects.module';
 import { DisplayTextModule } from './display-text/display-text.module';
+import { UsersController } from './users/users.controller';
+import { DisplayTextController } from './display-text/display-text.controller';
 
 @Module({
     imports: [
