@@ -10,7 +10,7 @@ export class User {
     uuid: string;
 
     @Prop()
-    name: string;
+    username: string;
 
     @Prop()
     password?: string;

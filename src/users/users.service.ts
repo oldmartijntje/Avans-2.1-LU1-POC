@@ -28,8 +28,8 @@ export class UsersService {
         });
     }
 
-    findOneByName(name: string): Promise<User> {
-        return this.userModel.findOne({ name }).exec().then(user => {
+    findOneByName(username: string): Promise<User> {
+        return this.userModel.findOne({ username }).exec().then(user => {
             if (!user) {
                 throw new NotFoundException('User Not Found');
             }
@@ -40,7 +40,7 @@ export class UsersService {
 
     async create(createUserDto: CreateUserDto): Promise<User> {
         // ensure username not already taken
-        const existing = await this.userModel.findOne({ name: createUserDto.username }).exec().catch(() => null);
+        const existing = await this.userModel.findOne({ username: createUserDto.username }).exec().catch(() => null);
         if (existing) {
             throw new ConflictException('Username already taken');
         }
@@ -57,8 +57,17 @@ export class UsersService {
         return userWithoutPassword;
     }
 
-    update(uuid: string, updateUserDto: UpdateUserDto): Promise<User> {
+    async update(uuid: string, updateUserDto: UpdateUserDto): Promise<User> {
         const dto: any = { ...updateUserDto };
+
+        // ensure username not already taken by another user
+        if (dto.username) {
+            const existing = await this.userModel.findOne({ username: dto.username, uuid: { $ne: uuid } }).exec().catch(() => null);
+            if (existing) {
+                throw new ConflictException('Username already taken');
+            }
+        }
+
         // if password is provided, hash it before updating
         if (dto.password) {
             const saltRounds = 10;
