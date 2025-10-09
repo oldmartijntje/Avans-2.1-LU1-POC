@@ -23,7 +23,8 @@ export class UsersService {
             if (!user) {
                 throw new NotFoundException('User Not Found');
             }
-            return user;
+            const { password, ...userWithoutPassword } = user.toObject();
+            return userWithoutPassword;
         });
     }
 
@@ -32,13 +33,14 @@ export class UsersService {
             if (!user) {
                 throw new NotFoundException('User Not Found');
             }
-            return user;
+            const { password, ...userWithoutPassword } = user.toObject();
+            return userWithoutPassword;
         });
     }
 
     async create(createUserDto: CreateUserDto): Promise<User> {
         // ensure username not already taken
-        const existing = await this.userModel.findOne({ name: createUserDto.name }).exec().catch(() => null);
+        const existing = await this.userModel.findOne({ name: createUserDto.username }).exec().catch(() => null);
         if (existing) {
             throw new ConflictException('Username already taken');
         }
@@ -50,7 +52,9 @@ export class UsersService {
             dto.password = bcrypt.hashSync(dto.password, saltRounds);
         }
         const createdUser = new this.userModel({ ...dto, ...{ uuid: uuidv4() } });
-        return createdUser.save();
+        const savedUser = await createdUser.save();
+        const { password, ...userWithoutPassword } = savedUser.toObject();
+        return userWithoutPassword;
     }
 
     update(uuid: string, updateUserDto: UpdateUserDto): Promise<User> {
@@ -64,7 +68,8 @@ export class UsersService {
             if (!user) {
                 throw new NotFoundException('User Not Found');
             }
-            return user;
+            const { password, ...userWithoutPassword } = user.toObject();
+            return userWithoutPassword;
         });
     }
 
@@ -73,7 +78,8 @@ export class UsersService {
             if (!user) {
                 throw new NotFoundException('User Not Found');
             }
-            return user;
+            const { password, ...userWithoutPassword } = user.toObject();
+            return userWithoutPassword;
         });
     }
 }
