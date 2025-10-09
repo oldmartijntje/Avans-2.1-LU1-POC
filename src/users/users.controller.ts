@@ -13,39 +13,39 @@ export class UsersController {
     // this also works with singletons
     constructor(private readonly usersService: UsersService) { }
 
-    @Get() // GET /users or /users?role=value
-    findAll(@Query('role') role?: 'TEACHER' | 'STUDENT' | 'ADMIN') {
-        return this.usersService.findAll(role);
-    }
+    // @Get() // GET /users or /users?role=value
+    // findAll(@Query('role') role?: 'TEACHER' | 'STUDENT' | 'ADMIN') {
+    //     return this.usersService.findAll(role);
+    // }
 
     // static routes need t be before dynamic routes, otherwise it will be interperated as a param
-    @AllowAnon()
-    @Get(':uuid') // GET /users/:uuid
-    findOne(@Param('uuid', new ParseUUIDPipe()) uuid: string) {
-        return this.usersService.findOne(uuid);
-    }
+    // @AllowAnon()
+    // @Get(':uuid') // GET /users/:uuid
+    // findOne(@Param('uuid', new ParseUUIDPipe()) uuid: string) {
+    //     return this.usersService.findOne(uuid);
+    // }
 
-    @Post() // POST /users
-    create(@Body(ValidationPipe) createUserDto: CreateUserDto) {
-        return this.usersService.create(createUserDto);
-    }
+    // @Post() // POST /users
+    // create(@Body(ValidationPipe) createUserDto: CreateUserDto) {
+    //     return this.usersService.create(createUserDto);
+    // }
 
-    @Patch(':uuid') // PATCH /users/:uuid
-    @UseGuards(AuthGuard)
-    update(@Param('uuid', new ParseUUIDPipe()) uuid: string, @Body(ValidationPipe) updateUserDto: UpdateUserDto, @Request() req) {
-        updateUserDto['name'] = undefined
-        // only allow changing password if the requester is the user themself
-        if (updateUserDto['password']) {
-            const requesterUuid = req.user?.sub;
-            if (!requesterUuid || requesterUuid !== uuid) {
-                throw new ForbiddenException('You can only change your own password');
-            }
-        }
-        return this.usersService.update(uuid, updateUserDto);
-    }
+    // @Patch(':uuid') // PATCH /users/:uuid
+    // @UseGuards(AuthGuard)
+    // update(@Param('uuid', new ParseUUIDPipe()) uuid: string, @Body(ValidationPipe) updateUserDto: UpdateUserDto, @Request() req) {
+    //     updateUserDto['name'] = undefined
+    //     // only allow changing password if the requester is the user themself
+    //     if (updateUserDto['password']) {
+    //         const requesterUuid = req.user?.sub;
+    //         if (!requesterUuid || requesterUuid !== uuid) {
+    //             throw new ForbiddenException('You can only change your own password');
+    //         }
+    //     }
+    //     return this.usersService.update(uuid, updateUserDto);
+    // }
 
-    @Delete(':uuid') // DELETE /users/:uuid
-    delete(@Param('uuid', new ParseUUIDPipe()) uuid: string) {
-        return this.usersService.delete(uuid);
-    }
+    // @Delete(':uuid') // DELETE /users/:uuid
+    // delete(@Param('uuid', new ParseUUIDPipe()) uuid: string) {
+    //     return this.usersService.delete(uuid);
+    // }
 }
