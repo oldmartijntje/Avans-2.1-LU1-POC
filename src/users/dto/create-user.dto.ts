@@ -7,7 +7,7 @@ export class CreateUserDto {
     @Matches(/^[a-z0-9_]+$/, {
         message: 'Username may only contain lowercase letters, numbers and underscore (_)',
     })
-    name: string;
+    username: string;
 
     @IsEmail()
     email: string;
