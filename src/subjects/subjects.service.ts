@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Subject, SubjectDocument } from './schemas/subject.schema';
 import { UsersService } from '../users/users.service';
 import { AddSubjectDto } from './dto/add-subject.dto';
+import { UpdateSubjectDto } from './dto/update-subject.dto';
 
 @Injectable()
 export class SubjectsService {
@@ -26,5 +27,9 @@ export class SubjectsService {
             throw new NotFoundException('Subject Not Found');
         }
         return subject;
+    }
+
+    async update(uuid: string, updateSubjectDto: UpdateSubjectDto) {
+
     }
 }
