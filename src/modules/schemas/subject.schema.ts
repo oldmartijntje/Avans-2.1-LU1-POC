@@ -25,7 +25,7 @@ export class Subject {
     studyPoints: number;
 
     @Prop()
-    language: string;
+    languages: string[];
 }
 
 export const SubjectSchema = SchemaFactory.createForClass(Subject);
