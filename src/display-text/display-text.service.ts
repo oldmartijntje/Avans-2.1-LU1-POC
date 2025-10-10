@@ -44,7 +44,10 @@ export class DisplayTextService {
                         });
                         return createdDisplayText.save();
                     }
-                    throw new NotFoundException(`DisplayText Not Found for uiKey: ${uiKey}`);
+                    return {
+                        uiKey: uiKey,
+                        notFound: true
+                    } as DisplayTextResponse;
                 }
                 return displayText;
             })
