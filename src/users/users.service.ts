@@ -38,6 +38,15 @@ export class UsersService {
         });
     }
 
+    findOneByNameForAuth(username: string): Promise<User> {
+        return this.userModel.findOne({ username }).exec().then(user => {
+            if (!user) {
+                throw new NotFoundException('User Not Found');
+            }
+            return user; // Include the password for authentication purposes
+        });
+    }
+
     async create(createUserDto: CreateUserDto): Promise<User> {
         // ensure username not already taken
         const existing = await this.userModel.findOne({ username: createUserDto.username }).exec().catch(() => null);
