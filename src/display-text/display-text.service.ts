@@ -29,10 +29,10 @@ export class DisplayTextService {
     }
 
     findAll(getDisplayTextsDto: GetDisplayTextsDto, isAdmin: boolean, userUuid: string): Promise<DisplayTextResponse[]> {
-        const { texts } = getDisplayTextsDto;
+        const { uiKeys } = getDisplayTextsDto;
 
         return Promise.all(
-            texts.map(async (uiKey) => {
+            uiKeys.map(async (uiKey) => {
                 const displayText = await this.displayTextModel.findOne({ uiKey }).exec();
                 if (!displayText) {
                     if (isAdmin) {
