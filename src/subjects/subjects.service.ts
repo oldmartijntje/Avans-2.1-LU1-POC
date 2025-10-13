@@ -48,7 +48,39 @@ export class SubjectsService {
     }
 
     // LIMIT TO TEACHERS AND ADMINS
-    async update(uuid: string, updateSubjectDto: UpdateSubjectDto) {
+    async update(uuid: string, updateSubjectDto: UpdateSubjectDto, userUuid: string) {
+        const subject = await this.subjectModel.findOne({ uuid: uuid })
+            .populate('description')
+            .populate('title')
+            .exec();
+        if (!subject) {
+            throw new NotFoundException('Subject Not Found');
+        }
 
+        // Ensure description and title are properly typed after population
+        const description = subject.description as any;
+        const title = subject.title as any;
+
+        const descriptionNL = updateSubjectDto.descriptionNL || description?.nl;
+        const descriptionEN = updateSubjectDto.descriptionEN || description?.en;
+        const titleNL = updateSubjectDto.titleNL || title?.nl;
+        const titleEN = updateSubjectDto.titleEN || title?.en;
+
+        const updatedDescription = await this.displayTextService.lookupByTranslations(descriptionNL, descriptionEN, true, userUuid);
+        const updatedTitle = await this.displayTextService.lookupByTranslations(titleNL, titleEN, true, userUuid);
+
+        // Update the subject fields
+        subject.title = updatedTitle || subject.title;
+        subject.description = updatedDescription || subject.description;
+        subject.level = updateSubjectDto.level || subject.level;
+        subject.studyPoints = updateSubjectDto.studyPoints || subject.studyPoints;
+        subject.languages = updateSubjectDto.languages || subject.languages;
+
+        // Save the updated subject
+        const updatedSubject = await subject.save();
+        await updatedSubject.populate("description");
+        await updatedSubject.populate("title");
+
+        return updatedSubject;
     }
 }

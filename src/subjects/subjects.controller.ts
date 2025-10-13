@@ -33,6 +33,6 @@ export class SubjectsController {
         @Body(ValidationPipe) updateSubjectDto: UpdateSubjectDto,
         @Request() req
     ) {
-        return this.subjectsService.update(uuid, updateSubjectDto);
+        return this.subjectsService.update(uuid, updateSubjectDto, req.user?.sub);
     }
 }
