@@ -53,4 +53,20 @@ export class DisplayTextService {
             })
         );
     }
+
+    async lookupByTranslations(dutch: string, english: string, create: boolean, userUuid: string) {
+        const displayText = await this.displayTextModel.findOne({ dutch, english }).exec();
+        if (!displayText && create) {
+            const createdDisplayText = new this.displayTextModel({
+                dutch: dutch,
+                creatorUuid: userUuid,
+                english: english
+            });
+            return (await createdDisplayText.save())._id;
+        } else if (!displayText) {
+            return null;
+        } else {
+            return displayText._id;
+        }
+    }
 }

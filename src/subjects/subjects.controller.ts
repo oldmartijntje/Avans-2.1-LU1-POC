@@ -8,6 +8,7 @@ import { UpdateSubjectDto } from './dto/update-subject.dto';
 export class SubjectsController {
     constructor(private readonly subjectsService: SubjectsService) { }
 
+    // LIMIT TO TEACHERS AND ADMINS
     @Post()
     @UseGuards(AuthGuard)
     create(@Body(ValidationPipe) createSubjectDto: AddSubjectDto, @Request() req) {
@@ -24,6 +25,7 @@ export class SubjectsController {
         return this.subjectsService.findOne(uuid);
     }
 
+    // LIMIT TO TEACHERS AND ADMINS
     @Patch(':uuid')
     @UseGuards(AuthGuard)
     update(

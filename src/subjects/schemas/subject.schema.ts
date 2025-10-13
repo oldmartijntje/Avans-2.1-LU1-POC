@@ -9,10 +9,10 @@ export class Subject {
     @Prop()
     uuid: string;
 
-    @Prop({ type: Types.ObjectId, ref: 'Translation' })
+    @Prop({ type: Types.ObjectId, ref: 'DisplayText' })
     title: Types.ObjectId;
 
-    @Prop({ type: Types.ObjectId, ref: 'Translation' })
+    @Prop({ type: Types.ObjectId, ref: 'DisplayText' })
     description: Types.ObjectId;
 
     @Prop()

@@ -13,6 +13,7 @@ import { UsersModule } from '../users/users.module';
     providers: [
         DisplayTextService
     ],
-    controllers: [DisplayTextController]
+    controllers: [DisplayTextController],
+    exports: [DisplayTextService]
 })
 export class DisplayTextModule { }
