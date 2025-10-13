@@ -3,9 +3,10 @@ import { Injectable } from "@nestjs/common";
 import { CaslAction } from "../dto/caslAction.enum";
 import { Subject } from "../../subjects/schemas/subject.schema";
 import { User } from "../../users/schemas/user.schema";
+import { DisplayText } from "../../display-text/schemas/display-text.schema";
 
 
-type Subjects = InferSubjects<typeof Subject | typeof User> | 'all';
+type Subjects = InferSubjects<typeof Subject | typeof User | typeof DisplayText> | 'all';
 
 export type AppAbility = MongoAbility<[CaslAction, Subjects]>;
 
@@ -24,11 +25,19 @@ export class CaslAbilityFactory {
         can(CaslAction.Delete, Subject, { ownerUuid: user.uuid });
 
         if (user.role === "ADMIN" || user.role === "TEACHER") {
-            can(CaslAction.Create, 'all')
+            can(CaslAction.Create, Subject);
+            can(CaslAction.Update, Subject);
+            can(CaslAction.Delete, Subject);
+            can(CaslAction.Create, DisplayText);
+            can(CaslAction.Update, DisplayText);
+            can(CaslAction.Delete, DisplayText);
         } else {
             cannot(CaslAction.Create, Subject);
             cannot(CaslAction.Update, Subject);
             cannot(CaslAction.Delete, Subject);
+            cannot(CaslAction.Create, DisplayText);
+            cannot(CaslAction.Update, DisplayText);
+            cannot(CaslAction.Delete, DisplayText);
         }
 
         return build({
@@ -36,6 +45,9 @@ export class CaslAbilityFactory {
             detectSubjectType: (item) => {
                 if (item instanceof Subject) {
                     return Subject;
+                }
+                if (item instanceof DisplayText) {
+                    return DisplayText;
                 }
                 if (item && item.uuid && item.ownerUuid) {
                     // Fallback for plain objects that resemble a Subject

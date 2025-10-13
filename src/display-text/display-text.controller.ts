@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, UseGuards, Request, Post, Body, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards, Request, Post, Body, ValidationPipe, Delete } from '@nestjs/common';
 import { AllowAnon } from '../auth/auth.decorator';
 import { AuthGuard } from '../auth/auth.guard';
 import { DisplayTextService } from './display-text.service';
@@ -12,10 +12,19 @@ export class DisplayTextController {
         private readonly usersService: UsersService
     ) { }
 
+    @Get('orphans')
+    async findOrphans(@Request() req) {
+        console.log(req.user?.sub)
+        return this.displayTextService.findUnused(req.user?.sub)
+    }
+
     @Get(':key')
     @AllowAnon()
     @UseGuards(AuthGuard)
     async findOne(@Param('key') uiKey: string, @Request() req) {
+        // this is different from normal auth methods because the creation of these types of display-text items is restricted to 
+        // the role type of ADMIN, and not to a specific CRUD type
+        // A teacher is allowed to create displayItems, but not in this way.
         let isAdmin = false;
         try {
             const user = await this.usersService.findOne(req.user?.sub);
@@ -32,6 +41,9 @@ export class DisplayTextController {
     @AllowAnon()
     @UseGuards(AuthGuard)
     async findAll(@Body(ValidationPipe) getDisplayTextsDto: GetDisplayTextsDto, @Request() req) {
+        // this is different from normal auth methods because the creation of these types of display-text items is restricted to 
+        // the role type of ADMIN, and not to a specific CRUD type
+        // A teacher is allowed to create displayItems, but not in this way.
         let isAdmin = false;
         try {
             const user = await this.usersService.findOne(req.user?.sub);
@@ -42,5 +54,10 @@ export class DisplayTextController {
 
         }
         return this.displayTextService.findAll(getDisplayTextsDto, isAdmin, req.user?.sub);
+    }
+
+    @Delete('orphans')
+    async deleteUnused(@Request() req) {
+        return this.displayTextService.deleteUnused(req.user?.sub)
     }
 }

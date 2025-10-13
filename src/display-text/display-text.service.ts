@@ -1,14 +1,24 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { DisplayText } from './schemas/display-text.schema';
 import { Model } from 'mongoose';
 import { GetDisplayTextsDto } from './dto/get-display-texts.dto';
 import { DisplayTextResponse } from './dto/diplay-text-response.dto';
+import { UsersService } from '../users/users.service';
+import { CaslAbilityFactory } from '../casl/casl-ability.factory/casl-ability.factory';
+import { CaslAction } from '../casl/dto/caslAction.enum';
+import { Subject } from 'rxjs';
+import { SubjectDocument } from '../subjects/schemas/subject.schema';
 
 @Injectable()
 export class DisplayTextService {
 
-    constructor(@InjectModel(DisplayText.name) private displayTextModel: Model<DisplayText>) { }
+    constructor(
+        @InjectModel(DisplayText.name) private displayTextModel: Model<DisplayText>,
+        @InjectModel(Subject.name) private subjectModel: Model<SubjectDocument>,
+        private readonly usersService: UsersService,
+        private caslAbilityFactory: CaslAbilityFactory
+    ) { }
 
     findOne(uiKey: string, isAdmin: boolean, userUuid: string): Promise<DisplayText> {
         return this.displayTextModel.findOne({ uiKey }).exec().then(displayText => {
@@ -68,5 +78,52 @@ export class DisplayTextService {
         } else {
             return displayText._id;
         }
+    }
+
+    async findUnused(userUuid: string) {
+        // this is the logic to check whether it is allowed
+        const user = await this.usersService.getByUuid(userUuid);
+        const ability = this.caslAbilityFactory.createForUser(user);
+        if (!ability.can(CaslAction.Read, DisplayText)) {
+            throw new UnauthorizedException();
+        }
+        const items = await this.displayTextModel.find({ uiKey: { $exists: false } });
+        const subjects = await this.subjectModel.find({}, { title: 1, description: 1 });
+
+        const usedIds = new Set();
+
+        for (const subject of subjects) {
+            const text = `${subject.title ?? ''} ${subject.description ?? ''}`;
+            for (const item of items) {
+                if (text.includes(item._id.toString())) {
+                    usedIds.add(item._id.toString());
+                }
+            }
+        }
+        const unusedItems = items.filter(item => !usedIds.has(item._id.toString()));
+        return unusedItems;
+    }
+
+    async deleteUnused(userUuid: string) {
+        const user = await this.usersService.getByUuid(userUuid);
+        const ability = this.caslAbilityFactory.createForUser(user);
+        if (!ability.can(CaslAction.Delete, DisplayText)) {
+            throw new UnauthorizedException();
+        }
+        let unused = await this.findUnused(userUuid);
+
+        const unusedIds = unused.map(item => item._id);
+        if (unusedIds.length === 0) {
+            return { message: 'No unused display texts found.' };
+        }
+
+        const result = await this.displayTextModel.deleteMany({
+            _id: { $in: unusedIds },
+        });
+
+        return {
+            deletedCount: result.deletedCount,
+            message: `Deleted ${result.deletedCount} unused display texts.`,
+        };
     }
 }

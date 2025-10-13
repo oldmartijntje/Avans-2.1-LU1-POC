@@ -4,14 +4,18 @@ import { DisplayTextController } from './display-text.controller';
 import { DisplayText, DisplayTextSchema } from './schemas/display-text.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from '../users/users.module';
+import { CaslAbilityFactory } from '../casl/casl-ability.factory/casl-ability.factory';
+import { Subject, SubjectSchema } from '../subjects/schemas/subject.schema';
 
 @Module({
     imports: [
         MongooseModule.forFeature([{ name: DisplayText.name, schema: DisplayTextSchema }]),
+        MongooseModule.forFeature([{ name: Subject.name, schema: SubjectSchema }]),
         UsersModule
     ],
     providers: [
-        DisplayTextService
+        DisplayTextService,
+        CaslAbilityFactory
     ],
     controllers: [DisplayTextController],
     exports: [DisplayTextService]
