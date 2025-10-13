@@ -5,6 +5,7 @@ import { SubjectsController } from './subjects.controller';
 import { Subject, SubjectSchema } from './schemas/subject.schema';
 import { UsersModule } from '../users/users.module';
 import { DisplayTextModule } from '../display-text/display-text.module';
+import { CaslAbilityFactory } from '../casl/casl-ability.factory/casl-ability.factory';
 
 @Module({
     imports: [
@@ -13,7 +14,10 @@ import { DisplayTextModule } from '../display-text/display-text.module';
         DisplayTextModule
     ],
     controllers: [SubjectsController],
-    providers: [SubjectsService],
+    providers: [
+        SubjectsService,
+        CaslAbilityFactory
+    ],
     exports: [SubjectsService]
 })
 export class SubjectsModule { }

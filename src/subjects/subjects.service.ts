@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Subject, SubjectDocument } from './schemas/subject.schema';
@@ -7,17 +7,27 @@ import { AddSubjectDto } from './dto/add-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
 import { DisplayTextService } from '../display-text/display-text.service';
 import { v4 as uuidv4 } from 'uuid';
+import { CaslAbilityFactory } from '../casl/casl-ability.factory/casl-ability.factory';
+import { CaslAction } from '../casl/dto/caslAction.enum';
 
 @Injectable()
 export class SubjectsService {
     constructor(
         @InjectModel(Subject.name) private subjectModel: Model<SubjectDocument>,
         private readonly usersService: UsersService,
-        private readonly displayTextService: DisplayTextService
+        private readonly displayTextService: DisplayTextService,
+        private caslAbilityFactory: CaslAbilityFactory
     ) { }
 
     // LIMIT TO TEACHERS AND ADMINS
     async create(createSubjectDto: AddSubjectDto, userUuid: string) {
+        // this is the logic to check whether it is allowed
+        const user = await this.usersService.getByUuid(userUuid);
+        const ability = this.caslAbilityFactory.createForUser(user);
+        if (!ability.can(CaslAction.Create, Subject)) {
+            throw new UnauthorizedException();
+        }
+
         let description = await this.displayTextService.lookupByTranslations(createSubjectDto.descriptionNL, createSubjectDto.descriptionEN, true, userUuid);
         let title = await this.displayTextService.lookupByTranslations(createSubjectDto.titleNL, createSubjectDto.titleEN, true, userUuid);
         const createdSubject = new this.subjectModel({
@@ -57,6 +67,13 @@ export class SubjectsService {
             throw new NotFoundException('Subject Not Found');
         }
 
+        // this is the logic to check whether it is allowed
+        const user = await this.usersService.getByUuid(userUuid);
+        const ability = this.caslAbilityFactory.createForUser(user);
+        if (!ability.can(CaslAction.Update, subject)) {
+            throw new UnauthorizedException();
+        }
+
         // Ensure description and title are properly typed after population
         const description = subject.description as any;
         const title = subject.title as any;
@@ -82,5 +99,23 @@ export class SubjectsService {
         await updatedSubject.populate("title");
 
         return updatedSubject;
+    }
+
+    // LIMIT TO TEACHERS AND ADMINS
+    async delete(uuid: string, userUuid: string) {
+        const subject = await this.subjectModel.findOne({ uuid: uuid }).exec();
+        if (!subject) {
+            throw new NotFoundException('Subject Not Found');
+        }
+
+        // this is the logic to check whether it is allowed
+        const user = await this.usersService.getByUuid(userUuid);
+        const ability = this.caslAbilityFactory.createForUser(user);
+        if (!ability.can(CaslAction.Delete, subject)) {
+            throw new UnauthorizedException();
+        }
+
+        await this.subjectModel.deleteOne({ uuid: uuid }).exec();
+        return { message: 'Subject deleted successfully' };
     }
 }

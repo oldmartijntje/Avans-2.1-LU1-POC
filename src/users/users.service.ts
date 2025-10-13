@@ -38,6 +38,15 @@ export class UsersService {
         });
     }
 
+    getByUuid(uuid: string): Promise<User> {
+        return this.userModel.findOne({ uuid }).exec().then(user => {
+            if (!user) {
+                throw new NotFoundException('User Not Found');
+            }
+            return user;
+        });
+    }
+
     findOneByNameForAuth(username: string): Promise<User> {
         return this.userModel.findOne({ username }).exec().then(user => {
             if (!user) {
