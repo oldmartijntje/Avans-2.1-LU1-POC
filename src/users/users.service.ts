@@ -69,7 +69,14 @@ export class UsersService {
             const saltRounds = 10;
             dto.password = bcrypt.hashSync(dto.password, saltRounds);
         }
-        const createdUser = new this.userModel({ ...dto, ...{ uuid: uuidv4() } });
+        const createdUser = new this.userModel({
+            ...dto,
+            ...{ uuid: uuidv4() },
+            ...{
+                favourites: [],
+                study: null
+            }
+        });
         const savedUser = await createdUser.save();
         const { password, ...userWithoutPassword } = savedUser.toObject();
         return userWithoutPassword;
