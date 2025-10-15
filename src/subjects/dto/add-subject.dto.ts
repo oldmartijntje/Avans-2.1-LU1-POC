@@ -29,4 +29,9 @@ export class AddSubjectDto {
     @IsString({ each: true })
     @IsNotEmpty({ each: true })
     languages: string[];
+
+    @IsArray()
+    @IsString({ each: true })
+    @IsNotEmpty({ each: true })
+    tags: string[];
 }
