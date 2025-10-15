@@ -39,6 +39,9 @@ export class UsersService {
     }
 
     getByUuid(uuid: string): Promise<User> {
+        if (!uuid) {
+            throw new NotFoundException('User Not Found');
+        }
         return this.userModel.findOne({ uuid }).exec().then(user => {
             if (!user) {
                 throw new NotFoundException('User Not Found');
