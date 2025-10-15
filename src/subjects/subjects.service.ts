@@ -9,6 +9,7 @@ import { DisplayTextService } from '../display-text/display-text.service';
 import { v4 as uuidv4 } from 'uuid';
 import { CaslAbilityFactory } from '../casl/casl-ability.factory/casl-ability.factory';
 import { CaslAction } from '../casl/dto/caslAction.enum';
+import { User } from '../users/schemas/user.schema';
 
 @Injectable()
 export class SubjectsService {
@@ -61,11 +62,48 @@ export class SubjectsService {
         return this.subjectModel.find().exec();
     }
 
-    async findOne(uuid: string, userUuid: string) {
-        const subject = await this.subjectModel.findOne({ uuid: uuid }).exec();
+    async findFavourites(userUuid: string) {
+        const user = await this.usersService.getByUuid(userUuid);
+        if (!user) {
+            throw new NotFoundException('User Not Found');
+        }
+
+        if (!user.favourites || user.favourites.length === 0) {
+            return [];
+        }
+
+        const subjects = await this.subjectModel
+            .find({ _id: { $in: user.favourites } })
+            .populate('description')
+            .populate('title')
+            .exec();
+
+        return subjects.map(subject => ({
+            ...subject.toObject(),
+            isFavourite: true,
+        }));
+    }
+
+    async addFavouriteBySubjectUuid(userUuid: string, subjectUuid: string): Promise<User> {
+        const subject = await this.subjectModel.findOne({ uuid: subjectUuid }).exec();
         if (!subject) {
             throw new NotFoundException('Subject Not Found');
         }
+
+        return this.usersService.addFavourite(userUuid, subject._id.toString());
+    }
+
+    async removeFavouriteBySubjectUuid(userUuid: string, subjectUuid: string): Promise<User> {
+        const subject = await this.subjectModel.findOne({ uuid: subjectUuid }).exec();
+        if (!subject) {
+            throw new NotFoundException('Subject Not Found');
+        }
+
+        return this.usersService.removeFavourite(userUuid, subject._id.toString());
+    }
+
+    async findOne(uuid: string, userUuid: string) {
+        const subject = await this.findByUuid(uuid, true);
         const user = await this.usersService.getByUuid(userUuid);
         if (!user) {
             throw new NotFoundException('User Not Found');
@@ -79,15 +117,25 @@ export class SubjectsService {
         };
     }
 
-    // LIMIT TO TEACHERS AND ADMINS
-    async update(uuid: string, updateSubjectDto: UpdateSubjectDto, userUuid: string) {
-        const subject = await this.subjectModel.findOne({ uuid: uuid })
-            .populate('description')
-            .populate('title')
-            .exec();
+    async findByUuid(uuid: string, populate: boolean) {
+        let subject;
+        if (populate) {
+            subject = await this.subjectModel.findOne({ uuid: uuid })
+                .populate('description')
+                .populate('title')
+                .exec();
+        } else {
+            subject = await this.subjectModel.findOne({ uuid: uuid }).exec();
+        }
         if (!subject) {
             throw new NotFoundException('Subject Not Found');
         }
+        return subject
+    }
+
+    // LIMIT TO TEACHERS AND ADMINS
+    async update(uuid: string, updateSubjectDto: UpdateSubjectDto, userUuid: string) {
+        const subject = await this.findByUuid(uuid, true);
 
         // this is the logic to check whether it is allowed
         const user = await this.usersService.getByUuid(userUuid);
@@ -125,10 +173,7 @@ export class SubjectsService {
 
     // LIMIT TO TEACHERS AND ADMINS
     async delete(uuid: string, userUuid: string) {
-        const subject = await this.subjectModel.findOne({ uuid: uuid }).exec();
-        if (!subject) {
-            throw new NotFoundException('Subject Not Found');
-        }
+        const subject = await this.findByUuid(uuid, false);
 
         // this is the logic to check whether it is allowed
         const user = await this.usersService.getByUuid(userUuid);

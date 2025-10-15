@@ -20,12 +20,17 @@ export class SubjectsController {
 
     @Get('favourites')
     getFavourites(@Request() req) {
-        // TODO
+        return this.subjectsService.findFavourites(req.user?.sub)
     }
 
     @Post('favourite/:uuid')
     setFavourite(@Param('uuid') uuid: string, @Request() req) {
-        // TODO
+        return this.subjectsService.addFavouriteBySubjectUuid(req.user?.sub, uuid);
+    }
+
+    @Delete('favourite/:uuid')
+    removeFavourite(@Param('uuid') uuid: string, @Request() req) {
+        return this.subjectsService.removeFavouriteBySubjectUuid(req.user?.sub, uuid);
     }
 
     @AllowAnon()

@@ -119,4 +119,32 @@ export class UsersService {
             return userWithoutPassword;
         });
     }
+
+    async addFavourite(uuid: string, favouriteId: string): Promise<User> {
+        return this.userModel.findOneAndUpdate(
+            { uuid },
+            { $addToSet: { favourites: favouriteId } }, // $addToSet ensures no duplicates
+            { new: true }
+        ).exec().then(user => {
+            if (!user) {
+                throw new NotFoundException('User Not Found');
+            }
+            const { password, ...userWithoutPassword } = user.toObject();
+            return userWithoutPassword;
+        });
+    }
+
+    async removeFavourite(uuid: string, favouriteId: string): Promise<User> {
+        return this.userModel.findOneAndUpdate(
+            { uuid },
+            { $pull: { favourites: favouriteId } }, // $pull removes the item from the array
+            { new: true }
+        ).exec().then(user => {
+            if (!user) {
+                throw new NotFoundException('User Not Found');
+            }
+            const { password, ...userWithoutPassword } = user.toObject();
+            return userWithoutPassword;
+        });
+    }
 }
