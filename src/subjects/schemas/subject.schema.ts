@@ -26,6 +26,9 @@ export class Subject {
 
     @Prop()
     languages: string[];
+
+    @Prop()
+    isFavourite?: boolean;
 }
 
 export const SubjectSchema = SchemaFactory.createForClass(Subject);

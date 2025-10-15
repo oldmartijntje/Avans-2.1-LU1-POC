@@ -45,16 +45,38 @@ export class SubjectsService {
         return subject;
     }
 
-    async findAll() {
+    async findAll(userUuid: string | undefined) {
+        if (userUuid != undefined) {
+            const user = await this.usersService.getByUuid(userUuid);
+            if (!user) {
+                return this.subjectModel.find().exec();
+            }
+            const subjects = await this.subjectModel.find().exec();
+            subjects.forEach(element => {
+                const isFavourite = user.favourites.includes(element._id);
+                element.isFavourite = isFavourite;
+            });
+            return subjects;
+        }
         return this.subjectModel.find().exec();
     }
 
-    async findOne(uuid: string) {
+    async findOne(uuid: string, userUuid: string) {
         const subject = await this.subjectModel.findOne({ uuid: uuid }).exec();
         if (!subject) {
             throw new NotFoundException('Subject Not Found');
         }
-        return subject;
+        const user = await this.usersService.getByUuid(userUuid);
+        if (!user) {
+            throw new NotFoundException('User Not Found');
+        }
+
+        const isFavourite = user.favourites.includes(subject._id);
+
+        return {
+            ...subject.toObject(),
+            isFavourite,
+        };
     }
 
     // LIMIT TO TEACHERS AND ADMINS

@@ -5,6 +5,7 @@ import { AddSubjectDto } from './dto/add-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
 import { CaslAbilityFactory } from '../casl/casl-ability.factory/casl-ability.factory';
 import { UsersService } from '../users/users.service';
+import { AllowAnon } from '../auth/auth.decorator';
 
 @Controller('subjects')
 export class SubjectsController {
@@ -17,14 +18,25 @@ export class SubjectsController {
         return this.subjectsService.create(createSubjectDto, req.user?.sub);
     }
 
+    @Get('favourites')
+    getFavourites(@Request() req) {
+        // TODO
+    }
+
+    @Post('favourite/:uuid')
+    setFavourite(@Param('uuid') uuid: string, @Request() req) {
+        // TODO
+    }
+
+    @AllowAnon()
     @Get()
-    findAll() {
-        return this.subjectsService.findAll();
+    findAll(@Request() req) {
+        return this.subjectsService.findAll(req.user?.sub);
     }
 
     @Get(':uuid')
-    findOne(@Param('uuid') uuid: string) {
-        return this.subjectsService.findOne(uuid);
+    findOne(@Param('uuid') uuid: string, @Request() req) {
+        return this.subjectsService.findOne(uuid, req.user?.sub);
     }
 
     @Patch(':uuid')
