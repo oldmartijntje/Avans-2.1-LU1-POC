@@ -13,6 +13,7 @@ import { UsersController } from './users/users.controller';
 import { DisplayTextController } from './display-text/display-text.controller';
 import { CourseController } from './course/course.controller';
 import { CourseModule } from './course/course.module';
+import { TagModule } from './tag/tag.module';
 
 @Module({
     imports: [
@@ -26,6 +27,7 @@ import { CourseModule } from './course/course.module';
         SubjectsModule,
         DisplayTextModule,
         CourseModule,
+        TagModule,
     ],
     controllers: [AppController, SubjectsController, CourseController],
     providers: [AppService],
