@@ -2,10 +2,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 
-export type SubjectDocument = HydratedDocument<Subject>;
+export type CourseDocument = HydratedDocument<Course>;
 
 @Schema()
-export class Subject {
+export class Course {
     @Prop()
     uuid: string;
 
@@ -15,23 +15,8 @@ export class Subject {
     @Prop({ type: Types.ObjectId, ref: 'DisplayText' })
     description: Types.ObjectId;
 
-    @Prop()
-    ownerUuid: string;
-
-    @Prop()
-    level: 'NLQF-5' | 'NLQF-6';
-
-    @Prop()
-    studyPoints: number;
-
-    @Prop()
-    languages: string[];
-
-    @Prop()
-    isFavourite?: boolean;
-
     @Prop({ type: [{ type: Types.ObjectId, ref: 'Tag' }] })
     tags: Types.ObjectId[];
 }
 
-export const SubjectSchema = SchemaFactory.createForClass(Subject);
+export const CourseSchema = SchemaFactory.createForClass(Course);
