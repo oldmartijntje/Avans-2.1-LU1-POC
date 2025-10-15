@@ -4,9 +4,10 @@ import { CaslAction } from "../dto/caslAction.enum";
 import { Subject } from "../../subjects/schemas/subject.schema";
 import { User } from "../../users/schemas/user.schema";
 import { DisplayText } from "../../display-text/schemas/display-text.schema";
+import { Course } from "../../course/schema/course.schema";
 
 
-type Subjects = InferSubjects<typeof Subject | typeof User | typeof DisplayText> | 'all';
+type Subjects = InferSubjects<typeof Subject | typeof User | typeof Course | typeof DisplayText> | 'all';
 
 export type AppAbility = MongoAbility<[CaslAction, Subjects]>;
 
@@ -31,6 +32,9 @@ export class CaslAbilityFactory {
             can(CaslAction.Create, DisplayText);
             can(CaslAction.Update, DisplayText);
             can(CaslAction.Delete, DisplayText);
+            can(CaslAction.Create, Course);
+            can(CaslAction.Update, Course);
+            can(CaslAction.Delete, Course);
         } else {
             cannot(CaslAction.Create, Subject);
             cannot(CaslAction.Update, Subject);
@@ -38,6 +42,9 @@ export class CaslAbilityFactory {
             cannot(CaslAction.Create, DisplayText);
             cannot(CaslAction.Update, DisplayText);
             cannot(CaslAction.Delete, DisplayText);
+            cannot(CaslAction.Create, Course);
+            cannot(CaslAction.Update, Course);
+            cannot(CaslAction.Delete, Course);
         }
 
         return build({
@@ -48,6 +55,9 @@ export class CaslAbilityFactory {
                 }
                 if (item instanceof DisplayText) {
                     return DisplayText;
+                }
+                if (item instanceof Course) {
+                    return Course;
                 }
                 if (item && item.uuid && item.ownerUuid) {
                     // Fallback for plain objects that resemble a Subject

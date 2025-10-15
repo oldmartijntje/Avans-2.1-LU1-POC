@@ -15,6 +15,9 @@ export class Course {
     @Prop({ type: Types.ObjectId, ref: 'DisplayText' })
     description: Types.ObjectId;
 
+    @Prop()
+    languages: string[];
+
     @Prop({ type: [{ type: Types.ObjectId, ref: 'Tag' }] })
     tags: Types.ObjectId[];
 }

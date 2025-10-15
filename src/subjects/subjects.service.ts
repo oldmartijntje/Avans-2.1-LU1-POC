@@ -52,6 +52,7 @@ export class SubjectsService {
         let subject = await createdSubject.save();
         subject = await subject.populate("description");
         subject = await subject.populate("title");
+        subject = await subject.populate("tags");
         return subject;
     }
 
@@ -61,14 +62,22 @@ export class SubjectsService {
             if (!user) {
                 return this.subjectModel.find().exec();
             }
-            const subjects = await this.subjectModel.find().exec();
+            const subjects = await this.subjectModel.find()
+                .populate('description')
+                .populate('title')
+                .populate('tags')
+                .exec();
             subjects.forEach(element => {
                 const isFavourite = user.favourites.includes(element._id);
                 element.isFavourite = isFavourite;
             });
             return subjects;
         }
-        return this.subjectModel.find().exec();
+        return this.subjectModel.find()
+            .populate('description')
+            .populate('title')
+            .populate('tags')
+            .exec();
     }
 
     async findFavourites(userUuid: string) {
@@ -85,6 +94,7 @@ export class SubjectsService {
             .find({ _id: { $in: user.favourites } })
             .populate('description')
             .populate('title')
+            .populate('tags')
             .exec();
 
         return subjects.map(subject => ({
@@ -132,6 +142,7 @@ export class SubjectsService {
             subject = await this.subjectModel.findOne({ uuid: uuid })
                 .populate('description')
                 .populate('title')
+                .populate('tags')
                 .exec();
         } else {
             subject = await this.subjectModel.findOne({ uuid: uuid }).exec();
@@ -184,6 +195,7 @@ export class SubjectsService {
         const updatedSubject = await subject.save();
         await updatedSubject.populate("description");
         await updatedSubject.populate("title");
+        await updatedSubject.populate("tags");
 
         return updatedSubject;
     }
