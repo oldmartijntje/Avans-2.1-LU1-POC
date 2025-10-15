@@ -1,23 +1,23 @@
-### Epic 1: Module Browsing & Filtering
-- [ ] As a student, I want to see a list of available modules so that I can explore my options.  
-- [ ] As a student, I want to filter modules by study points (15 or 30 EC) so that I can find modules that fit my schedule.  
-- [ ] As a student, I want to filter modules by level (NLQF-5 or NLQF-6) so that I only see suitable modules.  
-- [ ] As a student, I want to filter modules by theme so that I can focus on my interests.  
+### Epic 1: Subject Browsing & Filtering
+- [ ] As a student, I want to see a list of available subjects so that I can explore my options.  
+- [ ] As a student, I want to filter subjects by study points (15 or 30 EC) so that I can find subjects that fit my schedule.  
+- [ ] As a student, I want to filter subjects by level (NLQF-5 or NLQF-6) so that I only see suitable subjects.  
+- [ ] As a student, I want to filter subjects by theme so that I can focus on my interests.  
     - categories / keywords
-- [ ] As a student, I want to search for modules by name or keyword so that I can quickly find specific modules.  
+- [ ] As a student, I want to search for subjects by name or keyword so that I can quickly find specific subjects.  
 
-### Epic 2: Module Detail Page
-- [ ] As a student, I want to see detailed information about a module including description, EC, and type so that I can make an informed choice.  
-- [ ] As a student, I want buttons to add modules to my favorites so that I can save modules I am interested in.  
+### Epic 2: Subject Detail Page
+- [ ] As a student, I want to see detailed information about a subject including description, EC, and type so that I can make an informed choice.  
+- [ ] As a student, I want buttons to add subjects to my favorites so that I can save subjects I am interested in.  
 - [ ] As a student, I want a button for “more info” to access additional details or links.  
 
 ### Epic 3: Favorites & Comparison
-- [ ] As a student, I want to save modules as favorites so that I can easily access them later.  
-- [ ] As a student, I want to view a comparison of selected modules side by side so that I can make better decisions.  
-- [ ] As a student, I want to remove modules from my favorites list so that I can keep it organized.  
+- [ ] As a student, I want to save subjects as favorites so that I can easily access them later.  
+- [ ] As a student, I want to view a comparison of selected subjects side by side so that I can make better decisions.  
+- [ ] As a student, I want to remove subjects from my favorites list so that I can keep it organized.  
 
 ### Epic 4: Recommendations
-- [ ] As a student, I want to see recommended modules based on my study program so that I can discover modules I might like.  
+- [ ] As a student, I want to see recommended subjects based on my study program so that I can discover subjects I might like.  
     - account field
     - study collection that has a field for reccomended subjects
 - [ ] As a student, I want recommendations to be generated using a static/mock algorithm so that I can get suggestions even without AI.  
@@ -34,4 +34,16 @@
 ### Epic 7: Security & Authentication
 - [ ] As a student, I want secure communication between frontend and backend using JWT so that my data is protected.  
 - [ ] As a developer, I want to ensure no secrets or API keys are hardcoded so that the app is secure.  
-- [ ] As a student, I want failed requests to be handled gracefully so that I understand what went wrong.  
+- [ ] As a student, I want failed requests to be handled gracefully so that I understand what went wrong.
+
+### Epic 8: Subject Management
+- [ ] As a teacher, I want to add new subjects so that I can manage the curriculum.  
+- [ ] As a teacher, I want to edit existing subjects so that I can update their details.  
+- [ ] As a teacher, I want to delete subjects so that I can remove outdated or irrelevant ones.  
+
+### Epic 9: Translation Management
+- [ ] As a teacher, I want a page to edit translations of subjects so that they are available in multiple languages.  
+- [ ] As a teacher, I want a page to edit translations of the website UI so that it is accessible to users in different languages.  
+
+### Epic 10: Study Selection
+- [ ] As a student, I want to select a study so that I can tailor the app to my academic program.
