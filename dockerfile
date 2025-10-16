@@ -13,8 +13,8 @@ RUN npm install
 # Copy the rest of the application files
 COPY . .
 
-# Build the NestJS application with error checking
-RUN npm run build || (echo "Build failed!" && exit 1)
+# Build the NestJS application
+RUN npm run build
 
 # Verify dist directory exists and show contents
 RUN echo "=== Checking dist folder ===" && \
@@ -30,5 +30,5 @@ RUN echo "=== Checking dist folder ===" && \
 # Expose the application port
 EXPOSE 6969
 
-# Command to run the application
-CMD ["npm", "run", "start:prod"]
+# Command to run the application - use the correct path!
+CMD ["node", "dist/src/main.js"]
