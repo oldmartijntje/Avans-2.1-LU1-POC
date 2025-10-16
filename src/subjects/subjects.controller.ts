@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Request, UseGuards, ValidationPipe, Patch, ParseUUIDPipe, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Request, UseGuards, ValidationPipe, Patch, ParseUUIDPipe, Delete, Req, Query, BadRequestException } from '@nestjs/common';
 import { SubjectsService } from './subjects.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { AddSubjectDto } from './dto/add-subject.dto';
@@ -35,8 +35,19 @@ export class SubjectsController {
 
     @AllowAnon()
     @Get()
-    findAll(@Request() req) {
-        return this.subjectsService.findAll(req.user?.sub);
+    findAll(@Request() req, @Query('level') level?: 'NLQF-5' | 'NLQF-6', @Query('points') studyPoints?: string, @Query('tag') tag?: string) {
+        let pointsFilter: number | undefined;
+        if (studyPoints) {
+            if (!isNaN(Number(studyPoints))) {
+                pointsFilter = Number(studyPoints);
+            } else {
+                throw new BadRequestException("'points' is not a number")
+            }
+        }
+        if (level && level != 'NLQF-5' && level != 'NLQF-6') {
+            throw new BadRequestException("'level' is either 'NLQF-5' or 'NLQF-6'")
+        }
+        return this.subjectsService.findAll(req.user?.sub, level, pointsFilter, tag);
     }
 
     @Get(':uuid')

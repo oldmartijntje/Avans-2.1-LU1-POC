@@ -56,13 +56,32 @@ export class SubjectsService {
         return subject;
     }
 
-    async findAll(userUuid: string | undefined) {
+    async findAll(userUuid: string | undefined, level?: 'NLQF-5' | 'NLQF-6', pointsFilter?: number, tag?: string) {
+        const query: any = {};
+
+        if (level) {
+            query.level = level;
+        }
+
+        if (pointsFilter) {
+            query.studyPoints = { $gte: pointsFilter };
+        }
+
+        if (tag) {
+            const tagDocument = await this.tagService.lookupByName(tag, false);
+            if (tagDocument) {
+                query.tags = { $in: [tagDocument._id] };
+            } else {
+                return []
+            }
+        }
+
         if (userUuid != undefined) {
             const user = await this.usersService.findOne(userUuid);
             if (!user) {
-                return this.subjectModel.find().exec();
+                return this.subjectModel.find(query).exec();
             }
-            const subjects = await this.subjectModel.find()
+            const subjects = await this.subjectModel.find(query)
                 .populate('description')
                 .populate('title')
                 .populate('tags')
@@ -73,7 +92,7 @@ export class SubjectsService {
             });
             return subjects;
         }
-        return this.subjectModel.find()
+        return this.subjectModel.find(query)
             .populate('description')
             .populate('title')
             .populate('tags')

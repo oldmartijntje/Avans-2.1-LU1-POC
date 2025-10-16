@@ -3,20 +3,17 @@
     - [x] backend
     - [ ] frontend
 - [ ] As a student, I want to filter subjects by study points (15 or 30 EC) so that I can find subjects that fit my schedule.  
-    - [ ] backend
+    - [x] backend
     - [ ] frontend
 - [ ] As a student, I want to filter subjects by level (NLQF-5 or NLQF-6) so that I only see suitable subjects.  
-    - [ ] backend
+    - [x] backend
     - [ ] frontend
-- [ ] As a student, I want to filter subjects by tags so that I can focus on my interests.  
-    - [ ] backend
+- [ ] As a student, I want to filter subjects by a tag so that I can focus on my interests.  
+    - [x] backend
     - [ ] frontend
 - [ ] As a student, I want to see the list of tags so that I can know what I am able to filter on.  
-    - [ ] backend
+    - [x] backend
     - [ ] frontend
-- [ ] As a student, I want to search for subjects by name or keyword so that I can quickly find specific subjects. 
-    - [ ] backend
-    - [ ] frontend 
 
 ### Epic 2: Subject Detail Page
 - [ ] As a student, I want to see detailed information about a subject including description, EC, and type so that I can make an informed choice.  

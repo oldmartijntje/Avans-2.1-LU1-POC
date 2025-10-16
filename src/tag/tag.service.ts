@@ -22,4 +22,8 @@ export class TagService {
             return displayText._id;
         }
     }
+
+    async findAll() {
+        return this.tagModel.find().exec();
+    }
 }
