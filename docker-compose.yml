@@ -1,0 +1,8 @@
+services:
+  web:
+    image: oldmartijntje/Avans-2.1-LU1-POC-backend:latest
+    ports:
+      - "6969:6969"
+    restart: always
+    env_file:
+      - .env
