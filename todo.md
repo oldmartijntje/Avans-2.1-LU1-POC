@@ -39,10 +39,10 @@
 - [ ] As a student, I want to see recommended subjects based on my study program so that I can discover subjects I might like.  
     - account field
     - study collection that has a field for reccomended subjects
-    - [ ] backend
+    - [x] backend
     - [ ] frontend
 - [ ] As a student, I want recommendations to be generated using a static/mock algorithm so that I can get suggestions even without AI.  
-    - [ ] backend
+    - [x] backend
     - [ ] frontend
 
 ### Epic 5: Accessibility & Inclusivity

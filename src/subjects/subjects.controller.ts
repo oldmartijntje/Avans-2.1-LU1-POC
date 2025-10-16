@@ -23,6 +23,11 @@ export class SubjectsController {
         return this.subjectsService.findFavourites(req.user?.sub)
     }
 
+    @Get('reccomended')
+    async findSubjectsBySimilarTags(@Request() req) {
+        return this.subjectsService.findSubjectsBySimilarTags(req.user?.sub);
+    }
+
     @Post('favourite/:uuid')
     setFavourite(@Param('uuid') uuid: string, @Request() req) {
         return this.subjectsService.addFavouriteBySubjectUuid(req.user?.sub, uuid);

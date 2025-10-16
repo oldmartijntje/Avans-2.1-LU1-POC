@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Subject, SubjectDocument } from './schemas/subject.schema';
@@ -11,6 +11,7 @@ import { CaslAbilityFactory } from '../casl/casl-ability.factory/casl-ability.fa
 import { CaslAction } from '../casl/dto/caslAction.enum';
 import { User } from '../users/schemas/user.schema';
 import { TagService } from '../tag/tag.service';
+import { Course } from '../course/schema/course.schema';
 
 @Injectable()
 export class SubjectsService {
@@ -245,5 +246,31 @@ export class SubjectsService {
 
         await this.subjectModel.deleteOne({ uuid: uuid }).exec();
         return { message: 'Subject deleted successfully' };
+    }
+
+    async findSubjectsBySimilarTags(userUuid: string) {
+        const user = await this.usersService.findOne(userUuid);
+        if (!user || !user.study) {
+            throw new BadRequestException('User or user study not found');
+        }
+
+        const study = user.study as Course;
+
+        const studyTagIds = study.tags.map((tag: any) => tag instanceof Types.ObjectId ? tag.toString() : tag._id.toString());
+
+        const subjects = await this.subjectModel.find({ tags: { $in: studyTagIds } })
+            .populate('tags')
+            .exec();
+
+        return subjects.map(subject => {
+            const subjectTagIds = subject.tags.map((tag: any) => tag instanceof Types.ObjectId ? tag.toString() : tag._id.toString());
+            const matchingTags = subjectTagIds.filter(tagId => studyTagIds.includes(tagId));
+            const matchPercentage = (matchingTags.length / studyTagIds.length) * 100;
+
+            return {
+                ...subject.toObject(),
+                matchPercentage: Math.round(matchPercentage * 100) / 100, // Round to 2 decimal places
+            };
+        });
     }
 }
