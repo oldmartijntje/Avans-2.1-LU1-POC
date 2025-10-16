@@ -33,4 +33,4 @@ RUN echo "=== Final verification before CMD ===" && \
 EXPOSE 6969
 
 # Add a debug entrypoint to see what's happening at runtime
-CMD ["sh", "-c", "echo 'Runtime check:' && ls -la dist/ && node dist/src/main.js"]
+CMD ["sh", "-c", "echo 'Runtime check:' && ls -la dist/ && node dist/main.js"]
