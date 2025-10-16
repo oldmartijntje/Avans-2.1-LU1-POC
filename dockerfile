@@ -13,8 +13,19 @@ RUN npm install
 # Copy the rest of the application files
 COPY . .
 
-# Build the NestJS application with verbose output
-RUN npm run build && ls -la && ls -la dist
+# Build the NestJS application with error checking
+RUN npm run build || (echo "Build failed!" && exit 1)
+
+# Verify dist directory exists and show contents
+RUN echo "=== Checking dist folder ===" && \
+    ls -la && \
+    if [ -d "dist" ]; then \
+    echo "=== dist folder contents ===" && \
+    ls -laR dist; \
+    else \
+    echo "ERROR: dist folder does not exist!" && \
+    exit 1; \
+    fi
 
 # Expose the application port
 EXPOSE 6969
