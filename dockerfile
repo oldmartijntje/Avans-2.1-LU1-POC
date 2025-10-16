@@ -13,6 +13,9 @@ RUN npm install
 # Copy source code
 COPY . .
 
+# Install all dependencies including devDependencies
+RUN npm install
+
 # Build NestJS app
 RUN npm run build
 
