@@ -77,7 +77,7 @@ jobs:
           port: ${{ secrets.SERVER_SSH_PORT }}
           script: |
             set -e
-            cd /home/deploy/${{ env.REPO_NAME_LOWER }}
+            cd /home/deploy/${{ github.event.repository.name }}
             docker compose pull
             docker compose up -d --remove-orphans
             sleep 3
