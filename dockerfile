@@ -19,5 +19,5 @@ COPY . .
 EXPOSE 6969
 
 # Run app
-CMD ["node", "server.js"]
+CMD ["npm", "run", "start"]
 
