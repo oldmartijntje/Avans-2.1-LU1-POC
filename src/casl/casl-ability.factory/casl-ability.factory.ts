@@ -22,20 +22,14 @@ export class CaslAbilityFactory {
             can(CaslAction.Read, 'all'); // read-only access to everything
         }
 
-        can(CaslAction.Update, Subject, { ownerUuid: user.uuid });
-        can(CaslAction.Delete, Subject, { ownerUuid: user.uuid });
 
         if (user.role === "ADMIN" || user.role === "TEACHER") {
-            can(CaslAction.Create, Subject);
-            can(CaslAction.Update, Subject);
-            can(CaslAction.Delete, Subject);
-            can(CaslAction.Create, DisplayText);
-            can(CaslAction.Update, DisplayText);
-            can(CaslAction.Delete, DisplayText);
-            can(CaslAction.Create, Course);
-            can(CaslAction.Update, Course);
-            can(CaslAction.Delete, Course);
+            can(CaslAction.Create, 'all');
+            can(CaslAction.Update, 'all');
+            can(CaslAction.Delete, 'all');
         } else {
+            can(CaslAction.Update, Subject, { ownerUuid: user.uuid });
+            can(CaslAction.Delete, Subject, { ownerUuid: user.uuid });
             cannot(CaslAction.Create, Subject);
             cannot(CaslAction.Update, Subject);
             cannot(CaslAction.Delete, Subject);

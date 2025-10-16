@@ -21,7 +21,7 @@ export class User {
     @Prop()
     role: 'TEACHER' | 'STUDENT' | 'ADMIN';
 
-    @Prop({ type: Types.ObjectId, ref: 'Study', default: null })
+    @Prop({ type: Types.ObjectId, ref: 'Course', default: null })
     study: Types.ObjectId | null;
 
     @Prop({ type: [{ type: Types.ObjectId, ref: 'Subject' }] })

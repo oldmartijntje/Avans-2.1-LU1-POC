@@ -17,6 +17,21 @@ export class CourseController {
         return this.courseService.findAll(req.user?.sub);
     }
 
+    @Get('joined')
+    findJoined(@Request() req) {
+        return this.courseService.getStudy(req.user?.sub)
+    }
+
+    @Post('joined/:uuid')
+    join(@Param('uuid') uuid: string, @Request() req) {
+        return this.courseService.joinStudy(req.user?.sub, uuid)
+    }
+
+    @Delete('joined')
+    leave(@Request() req) {
+        return this.courseService.leaveStudy(req.user?.sub)
+    }
+
     @Get(':uuid')
     findOne(@Param('uuid') uuid: string, @Request() req) {
         return this.courseService.findOne(uuid, req.user?.sub);

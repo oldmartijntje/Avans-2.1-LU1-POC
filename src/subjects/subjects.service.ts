@@ -25,7 +25,7 @@ export class SubjectsService {
     // LIMIT TO TEACHERS AND ADMINS
     async create(createSubjectDto: AddSubjectDto, userUuid: string) {
         // this is the logic to check whether it is allowed
-        const user = await this.usersService.getByUuid(userUuid);
+        const user = await this.usersService.findOne(userUuid);
         const ability = this.caslAbilityFactory.createForUser(user);
         if (!ability.can(CaslAction.Create, Subject)) {
             throw new UnauthorizedException();
@@ -58,7 +58,7 @@ export class SubjectsService {
 
     async findAll(userUuid: string | undefined) {
         if (userUuid != undefined) {
-            const user = await this.usersService.getByUuid(userUuid);
+            const user = await this.usersService.findOne(userUuid);
             if (!user) {
                 return this.subjectModel.find().exec();
             }
@@ -81,7 +81,7 @@ export class SubjectsService {
     }
 
     async findFavourites(userUuid: string) {
-        const user = await this.usersService.getByUuid(userUuid);
+        const user = await this.usersService.findOne(userUuid);
         if (!user) {
             throw new NotFoundException('User Not Found');
         }
@@ -123,7 +123,7 @@ export class SubjectsService {
 
     async findOne(uuid: string, userUuid: string) {
         const subject = await this.findByUuid(uuid, true);
-        const user = await this.usersService.getByUuid(userUuid);
+        const user = await this.usersService.findOne(userUuid);
         if (!user) {
             throw new NotFoundException('User Not Found');
         }
@@ -158,7 +158,7 @@ export class SubjectsService {
         const subject = await this.findByUuid(uuid, true);
 
         // this is the logic to check whether it is allowed
-        const user = await this.usersService.getByUuid(userUuid);
+        const user = await this.usersService.findOne(userUuid);
         const ability = this.caslAbilityFactory.createForUser(user);
         if (!ability.can(CaslAction.Update, subject)) {
             throw new UnauthorizedException();
@@ -205,7 +205,7 @@ export class SubjectsService {
         const subject = await this.findByUuid(uuid, false);
 
         // this is the logic to check whether it is allowed
-        const user = await this.usersService.getByUuid(userUuid);
+        const user = await this.usersService.findOne(userUuid);
         const ability = this.caslAbilityFactory.createForUser(user);
         if (!ability.can(CaslAction.Delete, subject)) {
             throw new UnauthorizedException();

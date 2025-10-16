@@ -82,7 +82,7 @@ export class DisplayTextService {
 
     async findUnused(userUuid: string) {
         // this is the logic to check whether it is allowed
-        const user = await this.usersService.getByUuid(userUuid);
+        const user = await this.usersService.findOne(userUuid);
         const ability = this.caslAbilityFactory.createForUser(user);
         if (!ability.can(CaslAction.Read, DisplayText)) {
             throw new UnauthorizedException();
@@ -105,7 +105,7 @@ export class DisplayTextService {
     }
 
     async deleteUnused(userUuid: string) {
-        const user = await this.usersService.getByUuid(userUuid);
+        const user = await this.usersService.findOne(userUuid);
         const ability = this.caslAbilityFactory.createForUser(user);
         if (!ability.can(CaslAction.Delete, DisplayText)) {
             throw new UnauthorizedException();

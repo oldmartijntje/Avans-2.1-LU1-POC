@@ -19,13 +19,7 @@ export class UsersService {
     }
 
     findOne(uuid: string): Promise<User> {
-        return this.userModel.findOne({ uuid }).exec().then(user => {
-            if (!user) {
-                throw new NotFoundException('User Not Found');
-            }
-            const { password, ...userWithoutPassword } = user.toObject();
-            return userWithoutPassword;
-        });
+        return this.getByUuid(uuid, true);
     }
 
     findOneByName(username: string): Promise<User> {
@@ -38,15 +32,29 @@ export class UsersService {
         });
     }
 
-    getByUuid(uuid: string): Promise<User> {
-        if (!uuid) {
-            throw new NotFoundException('User Not Found');
+    getByUuid(uuid: string, populate: boolean): Promise<User> {
+        if (populate) {
+            return this.userModel.findOne({ uuid }).populate({
+                path: 'study',
+                populate: [
+                    { path: 'description' },
+                    { path: 'title' },
+                    { path: 'tags' }
+                ]
+            }).exec().then(user => {
+                if (!user) {
+                    throw new NotFoundException('User Not Found');
+                }
+                const { password, ...userWithoutPassword } = user.toObject();
+                return userWithoutPassword;
+            });
         }
         return this.userModel.findOne({ uuid }).exec().then(user => {
             if (!user) {
                 throw new NotFoundException('User Not Found');
             }
-            return user;
+            const { password, ...userWithoutPassword } = user.toObject();
+            return userWithoutPassword;
         });
     }
 
@@ -138,6 +146,34 @@ export class UsersService {
         return this.userModel.findOneAndUpdate(
             { uuid },
             { $pull: { favourites: favouriteId } }, // $pull removes the item from the array
+            { new: true }
+        ).exec().then(user => {
+            if (!user) {
+                throw new NotFoundException('User Not Found');
+            }
+            const { password, ...userWithoutPassword } = user.toObject();
+            return userWithoutPassword;
+        });
+    }
+
+    async setStudy(uuid: string, studyId: string): Promise<User> {
+        return this.userModel.findOneAndUpdate(
+            { uuid },
+            { study: studyId },
+            { new: true }
+        ).exec().then(user => {
+            if (!user) {
+                throw new NotFoundException('User Not Found');
+            }
+            const { password, ...userWithoutPassword } = user.toObject();
+            return userWithoutPassword;
+        });
+    }
+
+    async deleteStudy(uuid: string): Promise<User> {
+        return this.userModel.findOneAndUpdate(
+            { uuid },
+            { study: null },
             { new: true }
         ).exec().then(user => {
             if (!user) {

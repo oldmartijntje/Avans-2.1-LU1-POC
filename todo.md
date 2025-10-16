@@ -11,6 +11,9 @@
 - [ ] As a student, I want to filter subjects by tags so that I can focus on my interests.  
     - [ ] backend
     - [ ] frontend
+- [ ] As a student, I want to see the list of tags so that I can know what I am able to filter on.  
+    - [ ] backend
+    - [ ] frontend
 - [ ] As a student, I want to search for subjects by name or keyword so that I can quickly find specific subjects. 
     - [ ] backend
     - [ ] frontend 
@@ -85,11 +88,14 @@
 
 ### Epic 10: Study Selection
 - [ ] As a student, I want to select a study so that I can tailor the app to my academic program.
-    - [ ] backend
+    - [x] backend
     - [ ] frontend
 - [ ] As a teacher, I want to add new studies so that I can manage the curriculum.  
     - [x] backend
     - [ ] frontend
 - [ ] As a teacher, I want to delete and edit studies so that I can remove outdated or irrelevant ones.  
+    - [x] backend
+    - [ ] frontend
+- [ ] As a student, I want be able to view the study that I am enrolled in so that I can see whether it is correct.
     - [x] backend
     - [ ] frontend
