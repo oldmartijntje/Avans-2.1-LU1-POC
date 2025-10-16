@@ -9,6 +9,7 @@ import { CaslAbilityFactory } from '../casl/casl-ability.factory/casl-ability.fa
 import { CaslAction } from '../casl/dto/caslAction.enum';
 import { Subject } from 'rxjs';
 import { SubjectDocument } from '../subjects/schemas/subject.schema';
+import { UpdateDisplayText } from './dto/update-display-text.dto';
 
 @Injectable()
 export class DisplayTextService {
@@ -25,9 +26,9 @@ export class DisplayTextService {
             if (!displayText) {
                 if (isAdmin) {
                     const createdDisplayText = new this.displayTextModel({
-                        dutch: uiKey,
+                        dutch: uiKey + " (nieuw)",
                         creatorUuid: userUuid,
-                        english: uiKey,
+                        english: uiKey + " (new)",
                         uiKey: uiKey
                     });
                     return createdDisplayText.save();
@@ -47,9 +48,9 @@ export class DisplayTextService {
                 if (!displayText) {
                     if (isAdmin) {
                         const createdDisplayText = new this.displayTextModel({
-                            dutch: uiKey,
+                            dutch: uiKey + " (nieuw)",
                             creatorUuid: userUuid,
-                            english: uiKey,
+                            english: uiKey + " (new)",
                             uiKey: uiKey
                         });
                         return createdDisplayText.save();
@@ -125,5 +126,31 @@ export class DisplayTextService {
             deletedCount: result.deletedCount,
             message: `Deleted ${result.deletedCount} unused display texts.`,
         };
+    }
+
+    async findUiElements() {
+        return this.displayTextModel.find({ uiKey: { $exists: true } }).exec();
+    }
+
+    async update(uiKey: string, updateDisplayText: UpdateDisplayText, userUuid: string) {
+        const displayText = await this.displayTextModel.findOne({ uiKey }).exec();
+        console.log(displayText, uiKey)
+
+        if (!displayText) {
+            throw new NotFoundException(`DisplayText with uiKey '${uiKey}' not found.`);
+        }
+
+        // Check if the user has permission to update
+        const user = await this.usersService.findOne(userUuid);
+        const ability = this.caslAbilityFactory.createForUser(user);
+        if (!ability.can(CaslAction.Update, displayText)) {
+            throw new UnauthorizedException();
+        }
+
+        // Update the fields
+        displayText.english = updateDisplayText.english;
+        displayText.dutch = updateDisplayText.dutch;
+
+        return displayText.save();
     }
 }

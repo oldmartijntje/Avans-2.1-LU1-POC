@@ -83,7 +83,13 @@
     - [x] backend
     - [ ] frontend
 - [ ] As a teacher, I want a page to edit translations of the website UI so that it is accessible to users in different languages.  
-    - [ ] backend
+    - [x] backend
+    - [ ] frontend
+- [ ] As a teacher, I want a page to be able to see all unused translations so that i can see how much database space is wasted.  
+    - [x] backend
+    - [ ] frontend
+- [ ] As a teacher, I want a page to be able to delete all unused translations to clean up database space.  
+    - [x] backend
     - [ ] frontend
 
 ### Epic 10: Study Selection

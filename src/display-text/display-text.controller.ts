@@ -1,9 +1,10 @@
-import { Controller, Get, Param, Query, UseGuards, Request, Post, Body, ValidationPipe, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards, Request, Post, Body, ValidationPipe, Delete, Patch, ParseUUIDPipe, BadRequestException } from '@nestjs/common';
 import { AllowAnon } from '../auth/auth.decorator';
 import { AuthGuard } from '../auth/auth.guard';
 import { DisplayTextService } from './display-text.service';
 import { UsersService } from '../users/users.service';
 import { GetDisplayTextsDto } from './dto/get-display-texts.dto';
+import { UpdateDisplayText } from './dto/update-display-text.dto';
 
 @Controller('display-text')
 export class DisplayTextController {
@@ -12,9 +13,13 @@ export class DisplayTextController {
         private readonly usersService: UsersService
     ) { }
 
+    @Get()
+    async findAllUiElements(@Request() req) {
+        return this.displayTextService.findUiElements()
+    }
+
     @Get('orphans')
     async findOrphans(@Request() req) {
-        console.log(req.user?.sub)
         return this.displayTextService.findUnused(req.user?.sub)
     }
 
@@ -59,5 +64,15 @@ export class DisplayTextController {
     @Delete('orphans')
     async deleteUnused(@Request() req) {
         return this.displayTextService.deleteUnused(req.user?.sub)
+    }
+
+    @Patch(':key')
+    async update(
+        @Param('key') uiKey: string,
+        @Body(ValidationPipe) updateDisplayText: UpdateDisplayText,
+        @Request() req
+    ) {
+        if (!uiKey) throw new BadRequestException();
+        return this.displayTextService.update(uiKey, updateDisplayText, req.user?.sub);
     }
 }
