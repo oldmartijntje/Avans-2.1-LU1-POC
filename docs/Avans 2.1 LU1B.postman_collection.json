@@ -1,0 +1,876 @@
+{
+	"info": {
+		"_postman_id": "7eb5f477-4f91-4f8d-b900-867fa5e36f9e",
+		"name": "Avans 2.1 LU1B",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26011015",
+		"_collection_link": "https://oldma5.postman.co/workspace/Avans-2.1.1~7be81209-5547-43e8-af18-529e19847b51/collection/26011015-7eb5f477-4f91-4f8d-b900-867fa5e36f9e?action=share&source=collection_link&creator=26011015"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "get users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "role",
+									"value": "TEACHER",
+									"disabled": true
+								},
+								{
+									"key": "role",
+									"value": "STUDENT",
+									"disabled": true
+								},
+								{
+									"key": "role",
+									"value": "ADMIN",
+									"disabled": true
+								},
+								{
+									"key": "role",
+									"value": "someOtherInput",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/:uuid",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "b642ef13-8886-4b29-916d-0150a04ee04f"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Oliver\",\n    \"email\": \"oliver@gmail.com\",\n    \"role\": \"ADMIN\",\n    \"password\": \"ss\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update user",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"lenaraine\",\n    \"email\": \"lena.raine@gmail.com\",\n    \"role\": \"STUDENT\",\n    \"password\":\"henk\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/users/:uuid",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "b642ef13-8886-4b29-916d-0150a04ee04f"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/:uuid",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "dddc2d06-8911-4b52-af2e-0a772d7f37f3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "display-text",
+			"item": [
+				{
+					"name": "get translaton",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/display-text/:key",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"display-text",
+								":key"
+							],
+							"variable": [
+								{
+									"key": "key",
+									"value": "test.text"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get translatons",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"uiKeys\": [\n        \"header.buttons.title\",\n        \"header.buttons.title.2\",\n        \"header.buttons.title.3\",\n        \"header.buttons.title.4\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/display-text",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"display-text"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete orphans",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/display-text/orphans",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"display-text",
+								"orphans"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find orphans",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/display-text/orphans",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"display-text",
+								"orphans"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/display-text",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"display-text"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "edit ui key",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"english\": \"e\",\n    \"dutch\": \"e\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/display-text/:key",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"display-text",
+								":key"
+							],
+							"variable": [
+								{
+									"key": "key",
+									"value": "test.text"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "subjects",
+			"item": [
+				{
+					"name": "favourites",
+					"item": [
+						{
+							"name": "get favourites",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/subjects/favourites",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"subjects",
+										"favourites"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "set favourite",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/subjects/favourite/:uuid",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"subjects",
+										"favourite",
+										":uuid"
+									],
+									"variable": [
+										{
+											"key": "uuid",
+											"value": "3e6a04ac-bd87-46f2-b9eb-b7577f401fb9"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "remove favourite",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/subjects/favourite/:uuid",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"subjects",
+										"favourite",
+										":uuid"
+									],
+									"variable": [
+										{
+											"key": "uuid",
+											"value": "3e6a04ac-bd87-46f2-b9eb-b7577f401fb9"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "subjects",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/subjects?level=NLQF-5&points=3&tag=mongodb",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"subjects"
+							],
+							"query": [
+								{
+									"key": "level",
+									"value": "NLQF-5"
+								},
+								{
+									"key": "points",
+									"value": "3"
+								},
+								{
+									"key": "tag",
+									"value": "mongodb"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add subject",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"titleNL\": \"Je moeder\",\n    \"titleEN\": \"Your Mother\",\n    \"descriptionNL\": \"Je moeder is een plopkoek\",\n    \"descriptionEN\": \"Your mother is a plopcookie\",\n    \"moreInfoNL\": \"kaas\",\n    \"moreInfoEN\": \"cheese\",\n    \"level\": \"NLQF-5\",\n    \"studyPoints\": 3,\n    \"languages\": [\"NL\", \"EN\"],\n    \"tags\": [\"test\", \"mongodb\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/subjects",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"subjects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete subject",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/subjects/:uuid",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"subjects",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "8c47edef-8fb2-4f79-8516-ff18149f0091"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "edit subject Copy",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"titleNL\": \"Je Vader\",\n    \"titleEN\": \"Your Father\",\n    \"descriptionNL\": \"Je moeder is een plopkoek\",\n    \"descriptionEN\": \"Your mother is a plopcookie\",\n    \"moreInfoNL\": \"kaas\",\n    \"moreInfoEN\": \"cheese\",\n    \"level\": \"NLQF-5\",\n    \"studyPoints\": 3,\n    \"languages\": [\"NL\", \"EN\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/subjects/:uuid",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"subjects",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "8c47edef-8fb2-4f79-8516-ff18149f0091"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "single subject",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/subjects/:uuid",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"subjects",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "d47a019c-eace-4654-ac88-24e4b7a8baa7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get reccomended",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/subjects/reccomended",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"subjects",
+								"reccomended"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "course",
+			"item": [
+				{
+					"name": "student course",
+					"item": [
+						{
+							"name": "Join Course",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/course/joined/:uuid",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"course",
+										"joined",
+										":uuid"
+									],
+									"variable": [
+										{
+											"key": "uuid",
+											"value": "c3b68ac8-a857-4e1e-ab9f-f6baad5b7127"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Leave Course",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/course/joined",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"course",
+										"joined"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get your course",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/course/joined",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"course",
+										"joined"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Add Course",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"titleNL\": \"Je moeder\",\n    \"titleEN\": \"Your Mother\",\n    \"descriptionNL\": \"Je moeder is een plopkoek\",\n    \"descriptionEN\": \"Your mother is a plopcookie\",\n    \"languages\": [\"NL\", \"EN\"],\n    \"tags\": [\"test\", \"mongodb\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/course",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"course"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Courses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/course",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"course"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specific Course",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/course/:uuid",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"course",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "1f6b6b9c-a39f-4529-968e-16eebc809ab9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Course",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/course/:uuid",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"course",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "a7532253-5146-46af-8ddb-0d29e8e957c5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Course",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"titleNL\": \"Je moeder 2.0\",\n    \"titleEN\": \"Your Mother 2.0\",\n    \"descriptionNL\": \"Je moeder is een plopkoek\",\n    \"descriptionEN\": \"Your mother is a plopcookie\",\n    \"languages\": [\"NL\", \"EN\"],\n    \"tags\": [\"test\", \"mongodb\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/course/:uuid",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"course",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "11f22919-d977-4bf4-92e9-b97a2890425d"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "tags",
+			"item": [
+				{
+					"name": "find all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/tag",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tag"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"henk\",\n    \"password\": \"henk\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "profile",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"Oliver\",\n    \"password\": \"ss\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/profile",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"henk\",\n    \"password\": \"henk\",\n    \"email\": \"jemoder@henk.henk\",\n    \"role\": \"TEACHER\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/register",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDI4ZWVmMS0xZTA1LTRkN2QtOTAzZC02MDQyYzhlOTc0N2QiLCJ1c2VybmFtZSI6ImhlbmsiLCJpYXQiOjE3NjA2MTA0ODUsImV4cCI6MTc2MDY5Njg4NX0.ENibwgOLbqlZLLB-qH7361tNGtXG-AVb3W5qf7Wy2F4",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
