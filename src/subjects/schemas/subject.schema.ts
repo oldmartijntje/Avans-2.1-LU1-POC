@@ -24,6 +24,9 @@ export class Subject {
     @Prop()
     studyPoints: number;
 
+    @Prop({ type: Types.ObjectId, ref: 'DisplayText' })
+    moreInfo: Types.ObjectId;
+
     @Prop()
     languages: string[];
 

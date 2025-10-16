@@ -39,6 +39,7 @@ export class SubjectsService {
         });
         let description = await this.displayTextService.lookupByTranslations(createSubjectDto.descriptionNL, createSubjectDto.descriptionEN, true, userUuid);
         let title = await this.displayTextService.lookupByTranslations(createSubjectDto.titleNL, createSubjectDto.titleEN, true, userUuid);
+        let moreInfo = await this.displayTextService.lookupByTranslations(createSubjectDto.moreInfoNL, createSubjectDto.moreInfoEN, true, userUuid);
         const createdSubject = new this.subjectModel({
             uuid: uuidv4(),
             title,
@@ -46,12 +47,14 @@ export class SubjectsService {
             ownerUuid: userUuid,
             level: createSubjectDto.level,
             studyPoints: createSubjectDto.studyPoints,
+            moreInfo,
             languages: createSubjectDto.languages,
             tags: newTagsArray
         });
         let subject = await createdSubject.save();
         subject = await subject.populate("description");
         subject = await subject.populate("title");
+        subject = await subject.populate('moreInfo');
         subject = await subject.populate("tags");
         return subject;
     }
@@ -84,6 +87,7 @@ export class SubjectsService {
             const subjects = await this.subjectModel.find(query)
                 .populate('description')
                 .populate('title')
+                .populate('moreInfo')
                 .populate('tags')
                 .exec();
             subjects.forEach(element => {
@@ -95,6 +99,7 @@ export class SubjectsService {
         return this.subjectModel.find(query)
             .populate('description')
             .populate('title')
+            .populate('moreInfo')
             .populate('tags')
             .exec();
     }
@@ -113,6 +118,7 @@ export class SubjectsService {
             .find({ _id: { $in: user.favourites } })
             .populate('description')
             .populate('title')
+            .populate('moreInfo')
             .populate('tags')
             .exec();
 
@@ -161,6 +167,7 @@ export class SubjectsService {
             subject = await this.subjectModel.findOne({ uuid: uuid })
                 .populate('description')
                 .populate('title')
+                .populate('moreInfo')
                 .populate('tags')
                 .exec();
         } else {
@@ -193,14 +200,18 @@ export class SubjectsService {
         // Ensure description and title are properly typed after population
         const description = subject.description as any;
         const title = subject.title as any;
+        const moreInfo = subject.moreInfo as any;
 
         const descriptionNL = updateSubjectDto.descriptionNL || description?.nl;
         const descriptionEN = updateSubjectDto.descriptionEN || description?.en;
         const titleNL = updateSubjectDto.titleNL || title?.nl;
         const titleEN = updateSubjectDto.titleEN || title?.en;
+        const moreInfoNL = updateSubjectDto.moreInfoNL || moreInfo?.nl;
+        const moreInfoEN = updateSubjectDto.moreInfoEN || moreInfo?.en;
 
         const updatedDescription = await this.displayTextService.lookupByTranslations(descriptionNL, descriptionEN, true, userUuid);
         const updatedTitle = await this.displayTextService.lookupByTranslations(titleNL, titleEN, true, userUuid);
+        const updatedInfo = await this.displayTextService.lookupByTranslations(moreInfoNL, moreInfoEN, true, userUuid);
 
         // Update the subject fields
         subject.title = updatedTitle || subject.title;
@@ -208,12 +219,14 @@ export class SubjectsService {
         subject.level = updateSubjectDto.level || subject.level;
         subject.studyPoints = updateSubjectDto.studyPoints || subject.studyPoints;
         subject.languages = updateSubjectDto.languages || subject.languages;
+        subject.moreInfo = updatedInfo || subject.moreInfo;
         subject.tags = newTagsArray;
 
         // Save the updated subject
         const updatedSubject = await subject.save();
         await updatedSubject.populate("description");
         await updatedSubject.populate("title");
+        await updatedSubject.populate("moreInfo");
         await updatedSubject.populate("tags");
 
         return updatedSubject;

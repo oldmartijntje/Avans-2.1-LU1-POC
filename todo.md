@@ -24,7 +24,7 @@
     - [ ] frontend 
 - [ ] As a student, I want a button for “more info” to access additional details or links.  
     - additional info field
-    - [ ] backend
+    - [x] backend
     - [ ] frontend
 
 ### Epic 3: Favorites
