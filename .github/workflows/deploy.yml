@@ -35,7 +35,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REPO_NAME_LOWER }}:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REPO_NAME_LOWER }}:${{ github.sha }}
 
-      - name: Optional: show whether SSH_PASSPHRASE is present (masked)
+      - name: Show whether SSH_PASSPHRASE is present (masked)
         if: always()
         shell: bash
         run: |
