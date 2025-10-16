@@ -7,16 +7,14 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install all dependencies (needed for build)
-RUN npm install
+# Install all dependencies including devDependencies
+RUN npm install --legacy-peer-deps
+
+# Install Nest CLI globally (so `nest build` works)
+RUN npm install -g @nestjs/cli typescript
 
 # Copy source code
 COPY . .
-
-# Install all dependencies including devDependencies
-RUN npm install
-RUN npm install @nestjs/cli
-
 
 # Build NestJS app
 RUN npm run build
