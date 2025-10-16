@@ -16,19 +16,21 @@ COPY . .
 # Build the NestJS application
 RUN npm run build
 
-# Verify dist directory exists and show contents
-RUN echo "=== Checking dist folder ===" && \
+# Verify the build output RIGHT before running
+RUN echo "=== Final verification before CMD ===" && \
     ls -la && \
     if [ -d "dist" ]; then \
-    echo "=== dist folder contents ===" && \
-    ls -laR dist; \
+    echo "=== dist exists ===" && \
+    ls -laR dist/ && \
+    echo "=== Attempting to find main.js ===" && \
+    find dist -name "main.js" -type f; \
     else \
-    echo "ERROR: dist folder does not exist!" && \
+    echo "ERROR: No dist folder!" && \
     exit 1; \
     fi
 
 # Expose the application port
 EXPOSE 6969
 
-# Command to run the application - use the correct path!
-CMD ["node", "dist/src/main.js"]
+# Add a debug entrypoint to see what's happening at runtime
+CMD ["sh", "-c", "echo 'Runtime check:' && ls -la dist/ && node dist/src/main.js"]
