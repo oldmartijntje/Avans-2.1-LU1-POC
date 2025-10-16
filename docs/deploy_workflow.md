@@ -114,7 +114,7 @@ Keep the private key safe to add as a GitHub secret.
 Make sure that the bottom line of the docker file is the command that you use for starting the app:
 
 ```
-CMD ["node", "dist/main.js"]
+CMD ["npm", "run", "start:prod"]
 ```
 
 If you changed the command, change it here too.
