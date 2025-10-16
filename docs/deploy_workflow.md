@@ -63,6 +63,8 @@ ssh deploy@YOUR_SERVER_IP
 
 Then:
 
+Make sure the casing is the same as your repo name
+
 ```bash
 sudo mkdir -p /home/deploy/YOUR_REPO_NAME
 sudo chown -R deploy:deploy /home/deploy/YOUR_REPO_NAME
@@ -71,6 +73,8 @@ sudo chown -R deploy:deploy /home/deploy/YOUR_REPO_NAME
 ---
 
 ### 5. Copy `.env` and `docker-compose.yml`
+
+Make sure to replace my repo name in `docker-compose.yml` with yours. AND make sue it is lower case in here.
 
 From your local machine:
 

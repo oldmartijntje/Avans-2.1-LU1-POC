@@ -1,6 +1,6 @@
 services:
   web:
-    image: oldmartijntje/Avans-2.1-LU1-POC-backend:latest
+    image: oldmartijntje/avans-2.1-lu1-poc-backend:latest
     ports:
       - "6969:6969"
     restart: always
