@@ -138,6 +138,7 @@ You need to set these secrets:
 | `SERVER_USER`        | VPS deploy username (e.g., `deploy`)                    |
 | `SSH_PRIVATE_KEY`    | Private SSH key corresponding to your public key on VPS, generated in step 6 |
 | `SERVER_SSH_PORT`    | SSH port of your VPS (default: 22)                      |
+| `SSH_PASSPHRASE`    | The password you have set to your SSH, can be ignored if you did not set any  |
 
 If you’re unsure how to set secrets, see [user_secrets.md](./user_secrets.md).
 
