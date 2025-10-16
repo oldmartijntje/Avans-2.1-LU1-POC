@@ -20,3 +20,4 @@ EXPOSE 6969
 
 # Run app
 CMD ["node", "server.js"]
+
