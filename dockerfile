@@ -1,23 +1,21 @@
 FROM node:20-alpine
 
-# Set working directory
 WORKDIR /app
 
-# Copy package files first (better caching)
+# Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install --production
+# Install all dependencies to allow build
+RUN npm install
 
-# Copy the rest of the app
+# Copy rest of the code
 COPY . .
 
-# Build frontend if you have a build step (skip if not)
-# RUN npm run build
+# Build the app
+RUN npm run build
 
-# Expose app port
+# Expose port
 EXPOSE 6969
 
-# Run app
-CMD ["npm", "run", "start"]
-
+# Run the compiled app directly
+CMD ["node", "dist/main.js"]
