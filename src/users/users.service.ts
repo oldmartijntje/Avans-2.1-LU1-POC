@@ -161,7 +161,14 @@ export class UsersService {
             { uuid },
             { study: studyId },
             { new: true }
-        ).exec().then(user => {
+        ).populate({
+            path: 'study',
+            populate: [
+                { path: 'description' },
+                { path: 'title' },
+                { path: 'tags' }
+            ]
+        }).exec().then(user => {
             if (!user) {
                 throw new NotFoundException('User Not Found');
             }
