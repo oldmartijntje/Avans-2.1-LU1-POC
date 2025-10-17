@@ -16,6 +16,7 @@ export class DisplayTextController {
 
     @Get()
     async findAllUiElements(@Request() req) {
+        await this.displayTextService.deleteDuplicates(req.user?.sub)
         return this.displayTextService.findUiElements()
     }
 
@@ -65,6 +66,11 @@ export class DisplayTextController {
     @Delete('orphans')
     async deleteUnused(@Request() req) {
         return this.displayTextService.deleteUnused(req.user?.sub)
+    }
+
+    @Delete('duplicates')
+    async deleteDuplicates(@Request() req) {
+        return this.displayTextService.deleteDuplicates(req.user?.sub)
     }
 
     @Patch(':key')

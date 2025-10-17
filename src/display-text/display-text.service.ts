@@ -129,6 +129,90 @@ export class DisplayTextService {
         };
     }
 
+    async deleteDuplicates(userUuid: string) {
+        // Check if the user has permission to delete
+        const user = await this.usersService.findOne(userUuid);
+        const ability = this.caslAbilityFactory.createForUser(user);
+        if (!ability.can(CaslAction.Delete, DisplayText)) {
+            throw new UnauthorizedException();
+        }
+
+        // Find duplicates using aggregation - only consider items where uiKey is defined
+        const duplicates = await this.displayTextModel.aggregate([
+            {
+                $match: {
+                    uiKey: { $exists: true, $ne: null }
+                }
+            },
+            {
+                $group: {
+                    _id: '$uiKey',
+                    count: { $sum: 1 },
+                    ids: { $push: '$_id' }
+                }
+            },
+            { $match: { count: { $gt: 1 } } },
+            {
+                $project: {
+                    uiKey: '$_id',
+                    duplicateIds: '$ids',
+                    _id: 0
+                }
+            }
+        ], { maxTimeMS: 60000, allowDiskUse: true });
+
+        if (duplicates.length === 0) {
+            return {
+                message: 'No duplicates found.',
+                deletedCount: 0,
+                duplicateGroups: 0
+            };
+        }
+
+        let totalDeleted = 0;
+        const deletionResults: Array<{
+            uiKey: string;
+            totalFound: number;
+            deleted: number;
+            kept: string;
+        }> = [];
+
+        // For each group of duplicates, keep the oldest (first created) and delete the rest
+        for (const duplicate of duplicates) {
+            const { uiKey, duplicateIds } = duplicate;
+
+            // Get the actual documents to sort by creation time (_id contains timestamp)
+            const documents = await this.displayTextModel.find({
+                _id: { $in: duplicateIds }
+            }).sort({ _id: 1 }).exec(); // Sort by _id ascending (oldest first)
+
+            // Keep the first (oldest) document, delete the rest
+            const toDelete = documents.slice(1);
+            const idsToDelete = toDelete.map(doc => doc._id);
+
+            if (idsToDelete.length > 0) {
+                const result = await this.displayTextModel.deleteMany({
+                    _id: { $in: idsToDelete }
+                });
+
+                totalDeleted += result.deletedCount;
+                deletionResults.push({
+                    uiKey,
+                    totalFound: documents.length,
+                    deleted: result.deletedCount,
+                    kept: documents[0]._id.toString()
+                });
+            }
+        }
+
+        return {
+            message: `Found ${duplicates.length} duplicate groups and deleted ${totalDeleted} duplicate display texts.`,
+            deletedCount: totalDeleted,
+            duplicateGroups: duplicates.length,
+            results: deletionResults
+        };
+    }
+
     async findUiElements() {
         return this.displayTextModel.find({ uiKey: { $exists: true } }).exec();
     }
