@@ -166,33 +166,41 @@ export class DisplayTextService {
 
         for (const item of uiKeys) {
             try {
-                const displayText = await this.displayTextModel.findOne({ uiKey: item.uiKey }).exec();
+                let displayText = await this.displayTextModel.findOne({ uiKey: item.uiKey }).exec();
+                let isCreating = false;
 
                 if (!displayText) {
+                    // Create new display text if it doesn't exist
+                    displayText = new this.displayTextModel({
+                        uiKey: item.uiKey,
+                        english: item.english,
+                        dutch: item.dutch,
+                        creatorUuid: userUuid
+                    });
+                    isCreating = true;
+                }
+
+                // Check permission for the action (create or update)
+                const action = isCreating ? CaslAction.Create : CaslAction.Update;
+                if (!ability.can(action, displayText)) {
                     errors.push({
                         uiKey: item.uiKey,
-                        error: `DisplayText with uiKey '${item.uiKey}' not found.`
+                        error: `Unauthorized to ${isCreating ? 'create' : 'update'} this display text.`
                     });
                     continue;
                 }
 
-                // Check permission for each item
-                if (!ability.can(CaslAction.Update, displayText)) {
-                    errors.push({
-                        uiKey: item.uiKey,
-                        error: 'Unauthorized to update this display text.'
-                    });
-                    continue;
+                if (!isCreating) {
+                    // Update existing fields
+                    displayText.english = item.english;
+                    displayText.dutch = item.dutch;
                 }
-
-                // Update the fields
-                displayText.english = item.english;
-                displayText.dutch = item.dutch;
 
                 const savedDisplayText = await displayText.save();
                 results.push({
                     uiKey: item.uiKey,
                     success: true,
+                    created: isCreating,
                     data: savedDisplayText
                 });
 
@@ -202,9 +210,7 @@ export class DisplayTextService {
                     error: error.message || 'Unknown error occurred'
                 });
             }
-        }
-
-        return {
+        } return {
             successful: results.length,
             failed: errors.length,
             results,
