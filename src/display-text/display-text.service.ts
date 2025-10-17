@@ -10,6 +10,7 @@ import { CaslAction } from '../casl/dto/caslAction.enum';
 import { Subject } from 'rxjs';
 import { SubjectDocument } from '../subjects/schemas/subject.schema';
 import { UpdateDisplayText } from './dto/update-display-text.dto';
+import { MassUpdateDisplayTextDto, DisplayTextUpdateItem } from './dto/mass-update-display-text.dto';
 
 @Injectable()
 export class DisplayTextService {
@@ -152,5 +153,62 @@ export class DisplayTextService {
         displayText.dutch = updateDisplayText.dutch;
 
         return displayText.save();
+    }
+
+    async massUpdate(massUpdateDisplayTextDto: MassUpdateDisplayTextDto, userUuid: string) {
+        const { uiKeys } = massUpdateDisplayTextDto;
+        const results: any[] = [];
+        const errors: any[] = [];
+
+        // Check if the user has permission to update
+        const user = await this.usersService.findOne(userUuid);
+        const ability = this.caslAbilityFactory.createForUser(user);
+
+        for (const item of uiKeys) {
+            try {
+                const displayText = await this.displayTextModel.findOne({ uiKey: item.uiKey }).exec();
+
+                if (!displayText) {
+                    errors.push({
+                        uiKey: item.uiKey,
+                        error: `DisplayText with uiKey '${item.uiKey}' not found.`
+                    });
+                    continue;
+                }
+
+                // Check permission for each item
+                if (!ability.can(CaslAction.Update, displayText)) {
+                    errors.push({
+                        uiKey: item.uiKey,
+                        error: 'Unauthorized to update this display text.'
+                    });
+                    continue;
+                }
+
+                // Update the fields
+                displayText.english = item.english;
+                displayText.dutch = item.dutch;
+
+                const savedDisplayText = await displayText.save();
+                results.push({
+                    uiKey: item.uiKey,
+                    success: true,
+                    data: savedDisplayText
+                });
+
+            } catch (error) {
+                errors.push({
+                    uiKey: item.uiKey,
+                    error: error.message || 'Unknown error occurred'
+                });
+            }
+        }
+
+        return {
+            successful: results.length,
+            failed: errors.length,
+            results,
+            errors
+        };
     }
 }

@@ -5,6 +5,7 @@ import { DisplayTextService } from './display-text.service';
 import { UsersService } from '../users/users.service';
 import { GetDisplayTextsDto } from './dto/get-display-texts.dto';
 import { UpdateDisplayText } from './dto/update-display-text.dto';
+import { MassUpdateDisplayTextDto } from './dto/mass-update-display-text.dto';
 
 @Controller('display-text')
 export class DisplayTextController {
@@ -74,5 +75,13 @@ export class DisplayTextController {
     ) {
         if (!uiKey) throw new BadRequestException();
         return this.displayTextService.update(uiKey, updateDisplayText, req.user?.sub);
+    }
+
+    @Patch()
+    async massUpdate(
+        @Body(ValidationPipe) massUpdateDisplayTextDto: MassUpdateDisplayTextDto,
+        @Request() req
+    ) {
+        return this.displayTextService.massUpdate(massUpdateDisplayTextDto, req.user?.sub);
     }
 }
