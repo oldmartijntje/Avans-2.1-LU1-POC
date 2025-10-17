@@ -261,6 +261,10 @@ export class SubjectsService {
         const subjects = await this.subjectModel.find({ tags: { $in: studyTagIds } })
             .populate('tags')
             .exec();
+        subjects.forEach(element => {
+            const isFavourite = user.favourites.includes(element._id);
+            element.isFavourite = isFavourite;
+        });
 
         return subjects.map(subject => {
             const subjectTagIds = subject.tags.map((tag: any) => tag instanceof Types.ObjectId ? tag.toString() : tag._id.toString());
