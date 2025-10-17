@@ -158,7 +158,7 @@ export class SubjectsService {
 
         return {
             ...subject.toObject(),
-            isFavourite,
+            ...{ isFavourite }
         };
     }
 
