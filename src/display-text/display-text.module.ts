@@ -6,11 +6,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from '../users/users.module';
 import { CaslAbilityFactory } from '../casl/casl-ability.factory/casl-ability.factory';
 import { Subject, SubjectSchema } from '../subjects/schemas/subject.schema';
+import { Course, CourseSchema } from '../course/schema/course.schema';
 
 @Module({
     imports: [
         MongooseModule.forFeature([{ name: DisplayText.name, schema: DisplayTextSchema }]),
         MongooseModule.forFeature([{ name: Subject.name, schema: SubjectSchema }]),
+        MongooseModule.forFeature([{ name: Course.name, schema: CourseSchema }]),
         UsersModule
     ],
     providers: [

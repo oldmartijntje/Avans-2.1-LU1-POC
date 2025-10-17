@@ -9,6 +9,7 @@ import { CaslAbilityFactory } from '../casl/casl-ability.factory/casl-ability.fa
 import { CaslAction } from '../casl/dto/caslAction.enum';
 import { Subject } from 'rxjs';
 import { SubjectDocument } from '../subjects/schemas/subject.schema';
+import { Course, CourseDocument } from '../course/schema/course.schema';
 import { UpdateDisplayText } from './dto/update-display-text.dto';
 import { MassUpdateDisplayTextDto, DisplayTextUpdateItem } from './dto/mass-update-display-text.dto';
 
@@ -18,6 +19,7 @@ export class DisplayTextService {
     constructor(
         @InjectModel(DisplayText.name) private displayTextModel: Model<DisplayText>,
         @InjectModel(Subject.name) private subjectModel: Model<SubjectDocument>,
+        @InjectModel(Course.name) private courseModel: Model<CourseDocument>,
         private readonly usersService: UsersService,
         private caslAbilityFactory: CaslAbilityFactory
     ) { }
@@ -90,18 +92,31 @@ export class DisplayTextService {
             throw new UnauthorizedException();
         }
         const items = await this.displayTextModel.find({ uiKey: { $exists: false } });
-        const subjects = await this.subjectModel.find({}, { title: 1, description: 1 });
+        const subjects = await this.subjectModel.find({}, { title: 1, description: 1, moreInfo: 1 });
+        const courses = await this.courseModel.find({}, { title: 1, description: 1 });
 
         const usedIds = new Set();
 
+        // Check subjects for title, description, and moreInfo
         for (const subject of subjects) {
-            const text = `${subject.title ?? ''} ${subject.description ?? ''}`;
+            const text = `${subject.title ?? ''} ${subject.description ?? ''} ${subject.moreInfo ?? ''}`;
             for (const item of items) {
                 if (text.includes(item._id.toString())) {
                     usedIds.add(item._id.toString());
                 }
             }
         }
+
+        // Check courses for title and description
+        for (const course of courses) {
+            const text = `${course.title ?? ''} ${course.description ?? ''}`;
+            for (const item of items) {
+                if (text.includes(item._id.toString())) {
+                    usedIds.add(item._id.toString());
+                }
+            }
+        }
+
         const unusedItems = items.filter(item => !usedIds.has(item._id.toString()));
         return unusedItems;
     }
