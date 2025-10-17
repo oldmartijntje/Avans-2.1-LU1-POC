@@ -92,7 +92,7 @@ export class SubjectsService {
                 .populate('tags')
                 .exec();
             subjects.forEach(element => {
-                const isFavourite = user.favourites.includes(element._id);
+                const isFavourite = user.favourites.some(fav => fav.toString() === element._id.toString());
                 element.isFavourite = isFavourite;
             });
             return subjects;
@@ -154,7 +154,7 @@ export class SubjectsService {
             throw new NotFoundException('User Not Found');
         }
 
-        const isFavourite = user.favourites.includes(subject._id);
+        const isFavourite = user.favourites.some(fav => fav.toString() === subject._id.toString());
 
         return {
             ...subject.toObject(),
@@ -265,7 +265,7 @@ export class SubjectsService {
             .populate('moreInfo')
             .exec();
         subjects.forEach(element => {
-            const isFavourite = user.favourites.includes(element._id);
+            const isFavourite = user.favourites.some(fav => fav.toString() === element._id.toString());
             element.isFavourite = isFavourite;
         });
 
