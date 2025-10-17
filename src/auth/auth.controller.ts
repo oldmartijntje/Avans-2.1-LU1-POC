@@ -40,7 +40,7 @@ export class AuthController {
 
     @UseGuards(AuthGuard)
     @Get('profile')
-    getProfile(@Request() req) {
-        return req.user;
+    async getProfile(@Request() req) {
+        return { ...req.user, ... (await this.authService.getProfile(req.user?.sub)), ...{ "sub": undefined } }
     }
 }
