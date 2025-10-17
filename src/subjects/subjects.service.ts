@@ -260,6 +260,9 @@ export class SubjectsService {
 
         const subjects = await this.subjectModel.find({ tags: { $in: studyTagIds } })
             .populate('tags')
+            .populate('description')
+            .populate('title')
+            .populate('moreInfo')
             .exec();
         subjects.forEach(element => {
             const isFavourite = user.favourites.includes(element._id);
