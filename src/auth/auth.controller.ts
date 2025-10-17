@@ -28,15 +28,15 @@ export class AuthController {
         return this.authService.signIn(signInDto.username, signInDto.password);
     }
 
-    @AllowAnon()
-    @HttpCode(HttpStatus.OK)
-    @Post('register')
-    signup(@Body(ValidationPipe) createUserDto: CreateUserDto, @Request() req) {
-        if (createUserDto.role === "ADMIN") {
-            throw new UnauthorizedException("You do not have permissions to do this.")
-        }
-        return this.usersService.create(createUserDto);
-    }
+    // @AllowAnon()
+    // @HttpCode(HttpStatus.OK)
+    // @Post('register')
+    // signup(@Body(ValidationPipe) createUserDto: CreateUserDto, @Request() req) {
+    //     if (createUserDto.role === "ADMIN") {
+    //         throw new UnauthorizedException("You do not have permissions to do this.")
+    //     }
+    //     return this.usersService.create(createUserDto);
+    // }
 
     @UseGuards(AuthGuard)
     @Get('profile')
