@@ -2,14 +2,24 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, { cors: false });
+
+    app.enableCors({
+        origin: [
+            'http://localhost:5173',
+            'https://oldmartijntje.github.io',
+        ],
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+    });
+
     const port = process.env.PORT ?? (() => {
         throw new Error("PORT is not set in the .env\nHave you used the command: `npm run setup`?\n");
     })();
 
-    // Bind to all interfaces
     await app.listen(port, '0.0.0.0');
-
     console.log(`Server running on http://0.0.0.0:${port}`);
 }
+
 bootstrap();
