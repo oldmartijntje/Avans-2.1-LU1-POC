@@ -192,7 +192,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"uiKeys\": [\n        \"header.buttons.title\",\n        \"header.buttons.title.2\",\n        \"header.buttons.title.3\",\n        \"header.buttons.title.4\"\n    ]\n}",
+							"raw": "{\"uiKeys\":[\"button.cancel\",\"button.save\",\"button.submit\",\"footer.copyright\",\"form.password.label\",\"form.username.label\",\"header.subtitle\",\"header.title\",\"message.error.generic\",\"message.welcome\",\"navigation.about\",\"navigation.dashboard\",\"navigation.home\"]}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -300,6 +300,32 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "edit ui keys",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"uiKeys\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/display-text",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"display-text"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -345,7 +371,7 @@
 									"variable": [
 										{
 											"key": "uuid",
-											"value": "3e6a04ac-bd87-46f2-b9eb-b7577f401fb9"
+											"value": "69014712-0a50-4c09-b85e-6efeacccffe3"
 										}
 									]
 								}
@@ -370,7 +396,7 @@
 									"variable": [
 										{
 											"key": "uuid",
-											"value": "3e6a04ac-bd87-46f2-b9eb-b7577f401fb9"
+											"value": "69014712-0a50-4c09-b85e-6efeacccffe3"
 										}
 									]
 								}
@@ -453,7 +479,7 @@
 							"variable": [
 								{
 									"key": "uuid",
-									"value": "8c47edef-8fb2-4f79-8516-ff18149f0091"
+									"value": "c4499d35-a1ca-464c-901f-fb82927f690f"
 								}
 							]
 						}
@@ -486,7 +512,7 @@
 							"variable": [
 								{
 									"key": "uuid",
-									"value": "8c47edef-8fb2-4f79-8516-ff18149f0091"
+									"value": "1d1f813f-83fd-4151-9cc6-15c62987cff4"
 								}
 							]
 						}
@@ -510,7 +536,7 @@
 							"variable": [
 								{
 									"key": "uuid",
-									"value": "d47a019c-eace-4654-ac88-24e4b7a8baa7"
+									"value": "1d1f813f-83fd-4151-9cc6-15c62987cff4"
 								}
 							]
 						}
@@ -561,7 +587,7 @@
 									"variable": [
 										{
 											"key": "uuid",
-											"value": "c3b68ac8-a857-4e1e-ab9f-f6baad5b7127"
+											"value": "8e03b78b-29db-4429-9f10-7acb86b9fd87"
 										}
 									]
 								}
@@ -690,7 +716,7 @@
 							"variable": [
 								{
 									"key": "uuid",
-									"value": "a7532253-5146-46af-8ddb-0d29e8e957c5"
+									"value": "bbfc252e-b1ad-4427-a570-0ce6d3eead74"
 								}
 							]
 						}
@@ -723,7 +749,7 @@
 							"variable": [
 								{
 									"key": "uuid",
-									"value": "11f22919-d977-4bf4-92e9-b97a2890425d"
+									"value": "e78ab81f-e510-44b8-b671-e3944514a805"
 								}
 							]
 						}
@@ -761,7 +787,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"henk\",\n    \"password\": \"henk\"\n}",
+					"raw": "{\n    \"username\": \"mara\",\n    \"password\": \"mara\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -844,7 +870,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDI4ZWVmMS0xZTA1LTRkN2QtOTAzZC02MDQyYzhlOTc0N2QiLCJ1c2VybmFtZSI6ImhlbmsiLCJpYXQiOjE3NjA2MTA0ODUsImV4cCI6MTc2MDY5Njg4NX0.ENibwgOLbqlZLLB-qH7361tNGtXG-AVb3W5qf7Wy2F4",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNjlhZDMxNS0wMzljLTRkMTAtOGNkZS1hMGFlNWM0NDlkMjAiLCJ1c2VybmFtZSI6Im1hcmEiLCJpYXQiOjE3NjA3MTY1NzIsImV4cCI6MTc2MDgwMjk3Mn0.RwDYwuZpe_66P-BJBuXRWLThtagPHeQi03DPALSEPeY",
 				"type": "string"
 			}
 		]
